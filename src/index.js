@@ -1,1 +1,1 @@
-export Cropper from './Cropper';
+export ImageCropper from './ImageCropper';

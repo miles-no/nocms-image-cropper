@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 const ReactDOM = require('react-dom');
-import { Cropper } from 'nocms-image-cropper';
+import { ImageCropper } from 'nocms-image-cropper';
 
 class App extends React.Component {
   constructor(props) {
@@ -9,8 +9,7 @@ class App extends React.Component {
 
   render() {
     return (<div>
-      Test
-      <Cropper />
+      <ImageCropper src="http://i.imgur.com/n483ZwJ.jpg" />
     </div>);
   }
 }
