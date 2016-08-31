@@ -24941,8 +24941,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var minZoom = -50;
-	var maxZoom = 50;
+	var minZoom = -0.5;
+	var maxZoom = 0.5;
+	var zoomStep = 0.05;
 	
 	var ImageCropper = function (_React$Component) {
 	  _inherits(ImageCropper, _React$Component);
@@ -24956,56 +24957,77 @@
 	      zoom: 0
 	    };
 	
-	    _this.onZoomOutClick = _this.onZoomOutClick.bind(_this);
-	    _this.onZoomInClick = _this.onZoomInClick.bind(_this);
-	    //this.onZoomChange = this.onZoomChange.bind(this);
+	    _this.onZoomButtonClick = _this.onZoomButtonClick.bind(_this);
+	    _this.onZoomChange = _this.onZoomChange.bind(_this);
+	    _this.onCropperZoom = _this.onCropperZoom.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(ImageCropper, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      console.log('refs', this.refs);
-	
 	      var options = {
-	        zoomOnWheel: false
+	        zoomOnWheel: false,
+	        zoom: this.onCropperZoom
 	      };
 	
 	      this.cropper = new _cropperjs2.default(this.refs.img, options);
 	    }
 	  }, {
-	    key: 'zoom',
-	    value: function zoom(change) {
+	    key: 'onCropperZoom',
+	    value: function onCropperZoom(event) {
+	      var zoom = Math.round((event.ratio - 1) * 100) / 100;
+	
+	      console.log('zuuum', event.ratio, zoom);
+	
+	      if (zoom <= minZoom || zoom >= maxZoom) {
+	        return false;
+	      }
+	
+	      this.setState({
+	        zoom: zoom
+	      });
+	
+	      return true;
+	    }
+	  }, {
+	    key: 'onZoomButtonClick',
+	    value: function onZoomButtonClick(change) {
+	      console.log('zoom out', change);
+	
 	      var value = this.state.zoom + change;
 	
+	      this.zoom(value);
+	    }
+	  }, {
+	    key: 'onZoomChange',
+	    value: function onZoomChange(event) {
+	      console.log('onZoomChange', event.target.value);
+	      var value = parseFloat(event.target.value);
+	      if (value < minZoom || value > maxZoom) {
+	        return;
+	      }
+	
+	      this.zoom(value);
+	    }
+	  }, {
+	    key: 'zoom',
+	    value: function zoom(value) {
 	      console.log('zoom', value);
 	
-	      this.cropper.zoomTo(1 + value / 100);
+	      value = value > maxZoom ? maxZoom : value < minZoom ? minZoom : value;
+	
+	      this.cropper.zoomTo(1 + value);
 	
 	      this.setState({
 	        zoom: value
 	      });
 	    }
 	  }, {
-	    key: 'onZoomOutClick',
-	    value: function onZoomOutClick() {
-	      console.log('zoom out');
-	
-	      this.zoom(-5);
-	
-	      //this.cropper.zoom(-0.1);
-	    }
-	  }, {
-	    key: 'onZoomInClick',
-	    value: function onZoomInClick() {
-	      console.log('zoom in', this.cropper.zoom());
-	
-	      this.zoom(5);
-	      //this.cropper.zoom(0.1);
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+	
 	      var imgStyle = {
 	        height: '400px',
 	        width: '100%',
@@ -25030,13 +25052,17 @@
 	          null,
 	          _react2.default.createElement(
 	            'button',
-	            { onClick: this.onZoomOutClick },
+	            { onClick: function onClick() {
+	                return _this2.onZoomButtonClick(-1 * zoomStep);
+	              }, disabled: zoom <= minZoom },
 	            '-'
 	          ),
-	          _react2.default.createElement('input', { type: 'range', min: '-50', max: '50', step: '1', value: zoom }),
+	          _react2.default.createElement('input', { type: 'range', min: minZoom, max: maxZoom, step: zoomStep, value: zoom, onChange: this.onZoomChange }),
 	          _react2.default.createElement(
 	            'button',
-	            { onClick: this.onZoomInClick },
+	            { onClick: function onClick() {
+	                return _this2.onZoomButtonClick(zoomStep);
+	              }, disabled: zoom >= maxZoom },
 	            '+'
 	          )
 	        )
