@@ -70,16 +70,60 @@
 	  function App(props) {
 	    _classCallCheck(this, App);
 	
-	    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+	
+	    _this.state = {
+	      src: null,
+	      aspectRatio: 16 / 9
+	    };
+	
+	    _this.onImageClick = _this.onImageClick.bind(_this);
+	    return _this;
 	  }
 	
 	  _createClass(App, [{
+	    key: 'onImageClick',
+	    value: function onImageClick(src, aspectRatio) {
+	      console.log("onImageClick", src, aspectRatio);
+	      this.setState({
+	        src: src,
+	        aspectRatio: aspectRatio
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+	
+	      var _state = this.state;
+	      var src = _state.src;
+	      var aspectRatio = _state.aspectRatio;
+	
+	
+	      var style = {
+	        width: '100px',
+	        margin: '10px'
+	      };
+	
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(_nocmsImageCropper.ImageCropper, { src: 'http://i.imgur.com/n483ZwJ.jpg' })
+	        _react2.default.createElement('img', { style: style, src: '../img/alley.jpg', onClick: function onClick() {
+	            return _this2.onImageClick('../img/alley.jpg', 16 / 9);
+	          } }),
+	        _react2.default.createElement('img', { style: style, src: '../img/alley2.jpg', onClick: function onClick() {
+	            return _this2.onImageClick('../img/alley2.jpg', 16 / 9);
+	          } }),
+	        _react2.default.createElement('img', { style: style, src: '../img/alley.jpg', onClick: function onClick() {
+	            return _this2.onImageClick('../img/alley.jpg', 4 / 3);
+	          } }),
+	        _react2.default.createElement('img', { style: style, src: '../img/airport.jpeg', onClick: function onClick() {
+	            return _this2.onImageClick('../img/airport.jpeg', 4 / 3);
+	          } }),
+	        _react2.default.createElement('img', { style: style, src: '../img/airport.jpeg', onClick: function onClick() {
+	            return _this2.onImageClick('../img/airport.jpeg', 3 / 5);
+	          } }),
+	        _react2.default.createElement(_nocmsImageCropper.ImageCropper, { src: src, aspectRatio: aspectRatio })
 	      );
 	    }
 	  }]);
@@ -87,10 +131,7 @@
 	  return App;
 	}(_react2.default.Component);
 	
-	App.propTypes = {
-	  simple: _react.PropTypes.string,
-	  linkeditor: _react.PropTypes.string
-	};
+	App.propTypes = {};
 	
 	ReactDOM.render(_react2.default.createElement(App, null), document.getElementById('app'));
 
@@ -24941,9 +24982,13 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var minZoom = -0.5;
-	var maxZoom = 0.5;
-	var zoomStep = 0.05;
+	var autoCropArea = 0.8; //  80% of the image
+	//const minZoom = Math.floor((autoCropArea - 1) * 100) / 100;
+	//const maxZoom = Math.ceil((1 - autoCropArea) * 100) / 100;
+	var maxZoom = autoCropArea * 2;
+	var numberOfSteps = 100;
+	//const zoomStep = (maxZoom * 2) / 100;
+	//const zoomStepIncrement = 1 / zoomStep;
 	
 	var ImageCropper = function (_React$Component) {
 	  _inherits(ImageCropper, _React$Component);
@@ -24951,9 +24996,13 @@
 	  function ImageCropper(props) {
 	    _classCallCheck(this, ImageCropper);
 	
+	    //console.log("x", minZoom, maxZoom, zoomStep, zoomStepIncrement);
+	
 	    var _this = _possibleConstructorReturn(this, (ImageCropper.__proto__ || Object.getPrototypeOf(ImageCropper)).call(this, props));
 	
 	    _this.state = {
+	      minZoom: null,
+	      zoomStep: null,
 	      zoom: 0
 	    };
 	
@@ -24966,23 +25015,136 @@
 	  _createClass(ImageCropper, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
+	      var _this2 = this;
+	
 	      var options = {
+	        viewMode: 1,
+	        autoCropArea: autoCropArea,
+	        dragMode: 'move',
+	        cropBoxMovable: false,
+	        cropBoxResizable: false,
+	        aspectRatio: this.props.aspectRatio,
+	        guides: false,
+	        center: false,
+	        highlight: false,
+	        rotatable: false,
+	        scalable: false,
 	        zoomOnWheel: false,
-	        zoom: this.onCropperZoom
+	        zoom: this.onCropperZoom,
+	        crop: function crop(event) {
+	          if (_this2.state.minZoom === null) {
+	            _this2.calculateMinZoom();
+	          }
+	          /*
+	                  console.log('crop', event, this.cropper);
+	                  console.log("image data", this.cropper.getImageData());
+	                  console.log("data", this.cropper.getData());
+	          
+	                  var data = this.cropper.getImageData();
+	                  var ratioW = data.width / data.naturalWidth;
+	                  var ratioH = data.height / data.naturalHeight;
+	          
+	                  console.log('rat', ratioW, ratioH, ratioW * minZoom);
+	                  console.log('rat2', ratioW, minZoom, ratioW * minZoom);
+	          
+	                  var maxHeight = data.naturalWidth / this.props.aspectRatio;
+	                  var maxWidth = data.naturalHeight / this.props.aspectRatio;
+	          
+	                  console.log('maxHeight', maxHeight);
+	                  console.log('maxWidth', maxWidth);
+	          
+	                  var h = (maxHeight * ratioH) / data.naturalHeight;
+	                  var w = (maxWidth * ratioW) / data.naturalWidth;
+	          
+	                  console.log('h', h, w);
+	          
+	                  this.calculateMinZoom();*/
+	        },
+	        ready: function ready(event) {
+	          console.log('ready', event);
+	        }
 	      };
 	
 	      this.cropper = new _cropperjs2.default(this.refs.img, options);
+	
+	      console.log("image data", this.cropper.getImageData());
+	    }
+	  }, {
+	    key: 'calculateMinZoom',
+	    value: function calculateMinZoom() {
+	      var data = this.cropper.getImageData();
+	      var ratio = void 0;
+	      if (this.props.aspectRatio > 0) {
+	        ratio = data.width / data.naturalWidth;
+	      } else {
+	        ratio = data.height / data.naturalHeight;
+	      }
+	
+	      var minZoom = ratio - ratio * (1 - autoCropArea);
+	      console.log('calculateMinZoom', ratio, minZoom, data);
+	
+	      this.setState({
+	        zoom: ratio,
+	        minZoom: minZoom,
+	        zoomStep: this.calculateZoomStep(minZoom, maxZoom)
+	      });
+	    }
+	  }, {
+	    key: 'calculateZoomStep',
+	    value: function calculateZoomStep(min, max) {
+	      return (max - min) / numberOfSteps;
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      console.log('componentWillReceiveProps', nextProps);
+	
+	      this.setState({
+	        minZoom: null
+	      });
+	
+	      if (nextProps.src !== this.props.src) {
+	        this.cropper.replace(nextProps.src);
+	      }
+	      if (nextProps.aspectRatio !== this.props.aspectRatio) {
+	        this.cropper.setAspectRatio(nextProps.aspectRatio);
+	      }
+	
+	      this.cropper.reset();
 	    }
 	  }, {
 	    key: 'onCropperZoom',
 	    value: function onCropperZoom(event) {
-	      var zoom = Math.round((event.ratio - 1) * 100) / 100;
+	      var zoom = event.ratio;
 	
-	      console.log('zuuum', event.ratio, zoom);
+	      console.log('onCropperZoom', event);
 	
-	      if (zoom <= minZoom || zoom >= maxZoom) {
+	      if (zoom < this.state.minZoom) {
+	        this.cropper.zoomTo(this.state.minZoom);
+	
 	        return false;
 	      }
+	
+	      if (zoom > maxZoom) {
+	        this.cropper.zoomTo(maxZoom);
+	
+	        return false;
+	      }
+	
+	      /*if (zoom < minZoom - zoomStep || zoom > maxZoom + zoomStep) {
+	        return false;
+	      }
+	       if (zoom < minZoom) {
+	        zoom = minZoom;
+	      } else if (zoom > maxZoom) {
+	        zoom = maxZoom;
+	      //} else if (zoom < 0) {
+	      //  zoom = Math.floor((zoom) * zoomStepIncrement) / zoomStepIncrement;
+	      } else {
+	        zoom = Math.round((zoom) * zoomStepIncrement) / zoomStepIncrement;
+	      }*/
+	
+	      console.log('zuuum', zoom);
 	
 	      this.setState({
 	        zoom: zoom
@@ -24997,6 +25159,7 @@
 	
 	      var value = this.state.zoom + change;
 	
+	      //this.cropper.zoom(change);
 	      this.zoom(value);
 	    }
 	  }, {
@@ -25004,9 +25167,9 @@
 	    value: function onZoomChange(event) {
 	      console.log('onZoomChange', event.target.value);
 	      var value = parseFloat(event.target.value);
-	      if (value < minZoom || value > maxZoom) {
-	        return;
-	      }
+	      //if (value < minZoom || value > maxZoom) {
+	      //  return;
+	      //}
 	
 	      this.zoom(value);
 	    }
@@ -25015,9 +25178,10 @@
 	    value: function zoom(value) {
 	      console.log('zoom', value);
 	
+	      var minZoom = this.state.minZoom;
 	      value = value > maxZoom ? maxZoom : value < minZoom ? minZoom : value;
 	
-	      this.cropper.zoomTo(1 + value);
+	      this.cropper.zoomTo(value);
 	
 	      this.setState({
 	        zoom: value
@@ -25026,7 +25190,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
+	      var _this3 = this;
 	
 	      var imgStyle = {
 	        height: '400px',
@@ -25034,7 +25198,10 @@
 	        opacity: 0
 	      };
 	
-	      var zoom = this.state.zoom;
+	      var _state = this.state;
+	      var zoom = _state.zoom;
+	      var minZoom = _state.minZoom;
+	      var zoomStep = _state.zoomStep;
 	
 	
 	      return _react2.default.createElement(
@@ -25053,7 +25220,7 @@
 	          _react2.default.createElement(
 	            'button',
 	            { onClick: function onClick() {
-	                return _this2.onZoomButtonClick(-1 * zoomStep);
+	                return _this3.onZoomButtonClick(-1 * zoomStep);
 	              }, disabled: zoom <= minZoom },
 	            '-'
 	          ),
@@ -25061,7 +25228,7 @@
 	          _react2.default.createElement(
 	            'button',
 	            { onClick: function onClick() {
-	                return _this2.onZoomButtonClick(zoomStep);
+	                return _this3.onZoomButtonClick(zoomStep);
 	              }, disabled: zoom >= maxZoom },
 	            '+'
 	          )
@@ -25072,6 +25239,16 @@
 	
 	  return ImageCropper;
 	}(_react2.default.Component);
+	
+	ImageCropper.propTypes = {
+	  src: _react2.default.PropTypes.string,
+	  aspectRatio: _react2.default.PropTypes.number,
+	  autoCropArea: _react2.default.PropTypes.number
+	};
+	
+	ImageCropper.defaultProps = {
+	  aspectRatio: 16 / 9
+	};
 	
 	exports.default = ImageCropper;
 	module.exports = exports['default'];
