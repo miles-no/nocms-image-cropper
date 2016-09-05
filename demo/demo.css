@@ -1,0 +1,22 @@
+.image-cropper__body {
+  position: relative;
+}
+
+.image-cropper__zoom-in,
+.image-cropper__zoom-out {
+  position: absolute;
+  top: 0;
+}
+
+.image-cropper__zoom-in {
+  right: 0;
+}
+
+.image-cropper__slider-container {
+  margin: 0 46px;
+}
+
+.image-cropper__slider-container input {
+  width: 100%;
+  margin: 0;
+}

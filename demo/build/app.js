@@ -25216,21 +25216,25 @@
 	        }),
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'image-cropper__body' },
 	          _react2.default.createElement(
 	            'button',
 	            { onClick: function onClick() {
 	                return _this3.onZoomButtonClick(-1 * zoomStep);
-	              }, disabled: zoom <= minZoom },
-	            '-'
+	              }, disabled: zoom <= minZoom, className: 'material-icons image-cropper__zoom-out' },
+	            'remove'
 	          ),
-	          _react2.default.createElement('input', { type: 'range', min: minZoom, max: maxZoom, step: zoomStep, value: zoom, onChange: this.onZoomChange }),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'image-cropper__slider-container' },
+	            _react2.default.createElement('input', { type: 'range', min: minZoom, max: maxZoom, step: zoomStep, value: zoom, onChange: this.onZoomChange })
+	          ),
 	          _react2.default.createElement(
 	            'button',
 	            { onClick: function onClick() {
 	                return _this3.onZoomButtonClick(zoomStep);
-	              }, disabled: zoom >= maxZoom },
-	            '+'
+	              }, disabled: zoom >= maxZoom, className: 'material-icons image-cropper__zoom-in' },
+	            'add'
 	          )
 	        )
 	      );

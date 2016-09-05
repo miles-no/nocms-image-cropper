@@ -116,7 +116,7 @@ class ImageCropper extends React.Component {
     }
     if (nextProps.aspectRatio !== this.props.aspectRatio) {
        this.cropper.setAspectRatio(nextProps.aspectRatio);
-    }    
+    }
 
     this.cropper.reset();
   }
@@ -215,10 +215,12 @@ class ImageCropper extends React.Component {
           alt={this.props.alt === undefined ? "picture" : this.props.alt}
           style={imgStyle}
         />
-        <div>
-          <button onClick={() => this.onZoomButtonClick(-1 * zoomStep)} disabled={zoom <= minZoom}>-</button>
-          <input type="range" min={minZoom} max={maxZoom} step={zoomStep} value={zoom} onChange={this.onZoomChange} />
-          <button onClick={() => this.onZoomButtonClick(zoomStep)} disabled={zoom >= maxZoom}>+</button>
+        <div className="image-cropper__body">
+          <button onClick={() => this.onZoomButtonClick(-1 * zoomStep)} disabled={zoom <= minZoom} className="material-icons image-cropper__zoom-out">remove</button>
+          <div className="image-cropper__slider-container">
+            <input type="range" min={minZoom} max={maxZoom} step={zoomStep} value={zoom} onChange={this.onZoomChange} />
+          </div>
+          <button onClick={() => this.onZoomButtonClick(zoomStep)} disabled={zoom >= maxZoom} className="material-icons image-cropper__zoom-in">add</button>
         </div>
       </div>
     );
