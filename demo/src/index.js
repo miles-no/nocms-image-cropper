@@ -39,6 +39,7 @@ class App extends React.Component {
       <img style={style} src="../img/airport.jpeg" onClick={() => this.onImageClick('../img/airport.jpeg', 4 / 3)} />
       <img style={style} src="../img/blomst.jpeg" onClick={() => this.onImageClick('../img/blomst.jpeg', 3 / 5)} />
       <img style={style} src="../img/lite.png" onClick={() => this.onImageClick('../img/lite.png', 16 / 9)} />
+      <img style={style} src="http://res.cloudinary.com/dxzl6tbhy/image/upload/v1471954670/article/bridge_nocms.jpg" onClick={() => this.onImageClick('http://res.cloudinary.com/dxzl6tbhy/image/upload/v1471954670/article/bridge_nocms.jpg', 16 / 9)} />
       <ImageCropper src={src} aspectRatio={aspectRatio} />
     </div>);
   }

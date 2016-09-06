@@ -35,7 +35,9 @@ class ImageCropper extends React.Component {
       zoom: this.onCropperZoom,
       crop: () => {
         if (this.state.minZoom === null) {
-          this.calculateMinZoom();
+          setTimeout(() => {
+            this.calculateMinZoom();
+          }, 200);
         }
       },
     };
@@ -45,7 +47,6 @@ class ImageCropper extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.state.minZoom = null;
-    //this.state.zoom = 0;
 
     if (nextProps.src !== this.props.src) {
       this.cropper.replace(nextProps.src);
@@ -58,40 +59,26 @@ class ImageCropper extends React.Component {
   }
 
   onCropperZoom(event) {
-    const zoom = event.ratio;
-
-    console.log('onCropperZoom', zoom, event);
-
     if (!event.originalEvent) {
       return true;
     }
 
+    let zoom = event.ratio;
     if (zoom < this.state.minZoom) {
-      console.log('setting to min', this.state.minZoom);
-      this.cropper.zoomTo(this.state.minZoom);
-
-      this.setState({
-        zoom: this.state.minZoom,
-      });
-
-      return false;
+      zoom = this.state.minZoom;
+      this.cropper.zoomTo(zoom);
     }
 
     if (zoom > maxZoom) {
-      this.cropper.zoomTo(maxZoom);
-
-      this.setState({
-        zoom: maxZoom,
-      });
-
-      return false;
+      zoom = maxZoom;
+      this.cropper.zoomTo(zoom);
     }
 
     this.setState({
       zoom,
     });
 
-    return true;
+    return event.ratio >= this.state.minZoom && event.ratio <= maxZoom;
   }
 
   onSliderChange(value) {
@@ -109,7 +96,7 @@ class ImageCropper extends React.Component {
 
     const minZoom = ratio - (ratio * (1 - autoCropArea));
 
-    console.log('minZoom', minZoom, ratio);
+    //console.log('minZoom', minZoom, ratio);
 
     this.setState({
       zoom: ratio,
@@ -126,9 +113,9 @@ class ImageCropper extends React.Component {
       zoom = minZoom;
     }
 
-    console.log('zoom', zoom, minZoom);
+    //console.log('zoom', zoom, minZoom);
     this.cropper.zoomTo(zoom);
-    console.log('set state', zoom);
+    //console.log('set state', zoom);
     this.setState({
       zoom,
     });
