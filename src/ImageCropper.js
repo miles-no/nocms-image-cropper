@@ -32,6 +32,7 @@ class ImageCropper extends React.Component {
       rotatable: false,
       scalable: false,
       zoomOnWheel: false,
+      //background: false,
       zoom: this.onCropperZoom,
       crop: () => {
         if (this.state.minZoom === null) {
@@ -87,6 +88,7 @@ class ImageCropper extends React.Component {
 
   calculateMinZoom() {
     const data = this.cropper.getImageData();
+    console.log('calculateMinZoom', data);
     let ratio;
     if (this.props.aspectRatio > 0) {
       ratio = data.width / data.naturalWidth;
@@ -96,7 +98,7 @@ class ImageCropper extends React.Component {
 
     const minZoom = ratio - (ratio * (1 - autoCropArea));
 
-    //console.log('minZoom', minZoom, ratio);
+    console.log('minZoom', minZoom, ratio);
 
     this.setState({
       zoom: ratio,
@@ -123,7 +125,7 @@ class ImageCropper extends React.Component {
 
   render() {
     const imgStyle = {
-      height: '400px',
+      _height: '400px',
       width: '100%',
       opacity: 0,
     };

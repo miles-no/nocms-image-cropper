@@ -11,6 +11,13 @@ class Slider extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
 
+  componentWillReceiveProps() {
+    console.debug('render', this.refs.slider);
+
+    // Hack
+    this.refs.slider._handleResize();
+  }
+
   onIncrementClick(increment) {
     this.onChange(this.refs.slider.getValue() + increment);
   }
@@ -29,14 +36,14 @@ class Slider extends React.Component {
 
   convertToPercent({ min, max, value }) {
     const percent = ((value - min) / (max - min)) * numberOfSteps;
-    //console.log('convertToPercent', percent);
+    console.log('convertToPercent', percent);
 
     return percent;
   }
 
   convertFromPercent({ min, max, percent }) {
     const value = (1.0 / numberOfSteps) * (percent * max + numberOfSteps * min - percent * min);
-    //console.log('convertFromPercent', value);
+    console.log('convertFromPercent', value);
 
     return value;
   }

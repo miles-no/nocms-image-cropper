@@ -2,6 +2,7 @@
 .image-cropper__zoom-out {
   position: absolute;
   top: 2px;
+  padding: 5px;
 }
 
 .image-cropper__zoom-out {
@@ -14,7 +15,7 @@
 
 .image-cropper__slider-container {
   margin: 10px 50px;
-  padding: 0px 40px;
+  padding: 4px 40px;
   position: relative;
 }
 
@@ -37,7 +38,7 @@
 }
 
 .image-cropper__slider .bar.bar-1 {
-  background: #000000;
+  background: #414A52;
 }
 
 .image-cropper__slider .bar {
@@ -54,4 +55,17 @@
   background-color: #F06A48;
   cursor: pointer;
   border-radius: 14px;
+}
+
+.cropper-modal {
+    background-color: #e8e6e4;
+    opacity: 0.25;
+}
+
+.cropper-view-box {
+    outline: 1px solid #95989A;
+}
+
+.cropper-bg {
+    background: #e8e6e4;
 }

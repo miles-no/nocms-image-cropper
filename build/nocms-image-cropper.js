@@ -66,6 +66,7 @@ var ImageCropper = function (_React$Component) {
         rotatable: false,
         scalable: false,
         zoomOnWheel: false,
+        //background: false,
         zoom: this.onCropperZoom,
         crop: function crop() {
           if (_this2.state.minZoom === null) {
@@ -125,6 +126,7 @@ var ImageCropper = function (_React$Component) {
     key: 'calculateMinZoom',
     value: function calculateMinZoom() {
       var data = this.cropper.getImageData();
+      console.log('calculateMinZoom', data);
       var ratio = void 0;
       if (this.props.aspectRatio > 0) {
         ratio = data.width / data.naturalWidth;
@@ -134,7 +136,7 @@ var ImageCropper = function (_React$Component) {
 
       var minZoom = ratio - ratio * (1 - autoCropArea);
 
-      //console.log('minZoom', minZoom, ratio);
+      console.log('minZoom', minZoom, ratio);
 
       this.setState({
         zoom: ratio,
@@ -163,7 +165,7 @@ var ImageCropper = function (_React$Component) {
     key: 'render',
     value: function render() {
       var imgStyle = {
-        height: '400px',
+        _height: '400px',
         width: '100%',
         opacity: 0
       };
@@ -244,6 +246,14 @@ var Slider = function (_React$Component) {
   }
 
   _createClass(Slider, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps() {
+      console.debug('render', this.refs.slider);
+
+      // Hack
+      this.refs.slider._handleResize();
+    }
+  }, {
     key: 'onIncrementClick',
     value: function onIncrementClick(increment) {
       this.onChange(this.refs.slider.getValue() + increment);
@@ -269,7 +279,7 @@ var Slider = function (_React$Component) {
       var value = _ref.value;
 
       var percent = (value - min) / (max - min) * numberOfSteps;
-      //console.log('convertToPercent', percent);
+      console.log('convertToPercent', percent);
 
       return percent;
     }
@@ -281,7 +291,7 @@ var Slider = function (_React$Component) {
       var percent = _ref2.percent;
 
       var value = 1.0 / numberOfSteps * (percent * max + numberOfSteps * min - percent * min);
-      //console.log('convertFromPercent', value);
+      console.log('convertFromPercent', value);
 
       return value;
     }
