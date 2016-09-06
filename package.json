@@ -15,7 +15,8 @@
     "prepublish": "babel ./src --out-dir ./lib --source-maps --presets es2015,react --plugins babel-plugin-add-module-exports,babel-plugin-transform-class-properties && browserify ./lib/index.js -o ./build/nocms-image-cropper.js --transform browserify-global-shim --standalone NoCMSImageCropper && uglifyjs ./build/nocms-image-cropper.js --compress --mangle --output ./build/nocms-image-cropper.min.js --source-map ./build/nocms-image-cropper.min.js.map"
   },
   "dependencies": {
-    "react-cropperjs": "^1.2.2"
+    "react-cropperjs": "^1.2.2",
+    "react-slider": "^0.7.0"
   },
   "devDependencies": {
     "babel": "^6.5.2",
