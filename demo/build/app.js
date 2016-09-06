@@ -4420,7 +4420,6 @@
 	        rotatable: false,
 	        scalable: false,
 	        zoomOnWheel: false,
-	        //background: false,
 	        zoom: this.onCropperZoom,
 	        crop: function crop() {
 	          if (_this2.state.minZoom === null) {

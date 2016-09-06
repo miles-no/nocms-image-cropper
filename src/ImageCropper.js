@@ -32,7 +32,6 @@ class ImageCropper extends React.Component {
       rotatable: false,
       scalable: false,
       zoomOnWheel: false,
-      //background: false,
       zoom: this.onCropperZoom,
       crop: () => {
         if (this.state.minZoom === null) {
