@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 const ReactDOM = require('react-dom');
 import { ImageCropper } from 'nocms-image-cropper';
 
@@ -15,7 +15,6 @@ class App extends React.Component {
   }
 
   onImageClick(src, aspectRatio) {
-    console.log("onImageClick", src, aspectRatio);
     this.setState({
       src,
       aspectRatio,
@@ -31,20 +30,18 @@ class App extends React.Component {
     const style = {
       width: '100px',
       margin: '10px',
-    }
+    };
 
     return (<div>
       <img style={style} src="../img/alley.jpg" onClick={() => this.onImageClick('../img/alley.jpg', 16 / 9)} />
       <img style={style} src="../img/alley2.jpg" onClick={() => this.onImageClick('../img/alley2.jpg', 16 / 9)} />
       <img style={style} src="../img/alley.jpg" onClick={() => this.onImageClick('../img/alley.jpg', 4 / 3)} />
       <img style={style} src="../img/airport.jpeg" onClick={() => this.onImageClick('../img/airport.jpeg', 4 / 3)} />
-      <img style={style} src="../img/airport.jpeg" onClick={() => this.onImageClick('../img/airport.jpeg', 3 / 5)} />
+      <img style={style} src="../img/blomst.jpeg" onClick={() => this.onImageClick('../img/blomst.jpeg', 3 / 5)} />
+      <img style={style} src="../img/lite.png" onClick={() => this.onImageClick('../img/lite.png', 16 / 9)} />
       <ImageCropper src={src} aspectRatio={aspectRatio} />
     </div>);
   }
 }
-
-App.propTypes = {
-};
 
 ReactDOM.render(<App />, document.getElementById('app'));

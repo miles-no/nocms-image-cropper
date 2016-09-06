@@ -1,28 +1,20 @@
 import React from 'react';
+import Slider from './atoms/Slider';
 import Cropper from 'cropperjs';
 
 const autoCropArea = 0.8; //  80% of the image
-//const minZoom = Math.floor((autoCropArea - 1) * 100) / 100;
-//const maxZoom = Math.ceil((1 - autoCropArea) * 100) / 100;
 const maxZoom = autoCropArea * 2;
-const numberOfSteps = 100;
-//const zoomStep = (maxZoom * 2) / 100;
-//const zoomStepIncrement = 1 / zoomStep;
 
 class ImageCropper extends React.Component {
   constructor(props) {
     super(props);
 
-    //console.log("x", minZoom, maxZoom, zoomStep, zoomStepIncrement);
-
     this.state = {
-      minZoom: null,
-      zoomStep: null,
       zoom: 0,
+      minZoom: null,
     };
 
-    this.onZoomButtonClick = this.onZoomButtonClick.bind(this);
-    this.onZoomChange = this.onZoomChange.bind(this);
+    this.onSliderChange = this.onSliderChange.bind(this);
     this.onCropperZoom = this.onCropperZoom.bind(this);
   }
 
@@ -41,44 +33,69 @@ class ImageCropper extends React.Component {
       scalable: false,
       zoomOnWheel: false,
       zoom: this.onCropperZoom,
-      crop: (event) => {
+      crop: () => {
         if (this.state.minZoom === null) {
           this.calculateMinZoom();
         }
-/*
-        console.log('crop', event, this.cropper);
-        console.log("image data", this.cropper.getImageData());
-        console.log("data", this.cropper.getData());
-
-        var data = this.cropper.getImageData();
-        var ratioW = data.width / data.naturalWidth;
-        var ratioH = data.height / data.naturalHeight;
-
-        console.log('rat', ratioW, ratioH, ratioW * minZoom);
-        console.log('rat2', ratioW, minZoom, ratioW * minZoom);
-
-        var maxHeight = data.naturalWidth / this.props.aspectRatio;
-        var maxWidth = data.naturalHeight / this.props.aspectRatio;
-
-        console.log('maxHeight', maxHeight);
-        console.log('maxWidth', maxWidth);
-
-        var h = (maxHeight * ratioH) / data.naturalHeight;
-        var w = (maxWidth * ratioW) / data.naturalWidth;
-
-        console.log('h', h, w);
-
-        this.calculateMinZoom();*/
       },
-      ready: (event) => {
-        console.log('ready', event);
-      }
     };
 
     this.cropper = new Cropper(this.refs.img, options);
+  }
 
-    console.log("image data", this.cropper.getImageData());
+  componentWillReceiveProps(nextProps) {
+    this.state.minZoom = null;
+    //this.state.zoom = 0;
 
+    if (nextProps.src !== this.props.src) {
+      this.cropper.replace(nextProps.src);
+    }
+    if (nextProps.aspectRatio !== this.props.aspectRatio) {
+      this.cropper.setAspectRatio(nextProps.aspectRatio);
+    }
+
+    this.cropper.reset();
+  }
+
+  onCropperZoom(event) {
+    const zoom = event.ratio;
+
+    console.log('onCropperZoom', zoom, event);
+
+    if (!event.originalEvent) {
+      return true;
+    }
+
+    if (zoom < this.state.minZoom) {
+      console.log('setting to min', this.state.minZoom);
+      this.cropper.zoomTo(this.state.minZoom);
+
+      this.setState({
+        zoom: this.state.minZoom,
+      });
+
+      return false;
+    }
+
+    if (zoom > maxZoom) {
+      this.cropper.zoomTo(maxZoom);
+
+      this.setState({
+        zoom: maxZoom,
+      });
+
+      return false;
+    }
+
+    this.setState({
+      zoom,
+    });
+
+    return true;
+  }
+
+  onSliderChange(value) {
+    this.zoom(value);
   }
 
   calculateMinZoom() {
@@ -91,105 +108,29 @@ class ImageCropper extends React.Component {
     }
 
     const minZoom = ratio - (ratio * (1 - autoCropArea));
-    console.log('calculateMinZoom', ratio, minZoom, data);
+
+    console.log('minZoom', minZoom, ratio);
 
     this.setState({
       zoom: ratio,
       minZoom,
-      zoomStep: this.calculateZoomStep(minZoom, maxZoom),
     });
-  }
-
-  calculateZoomStep(min, max) {
-    return (max - min) / numberOfSteps;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps', nextProps);
-
-    this.setState({
-      minZoom: null,
-    });
-
-    if (nextProps.src !== this.props.src) {
-         this.cropper.replace(nextProps.src);
-    }
-    if (nextProps.aspectRatio !== this.props.aspectRatio) {
-       this.cropper.setAspectRatio(nextProps.aspectRatio);
-    }
-
-    this.cropper.reset();
-  }
-
-  onCropperZoom(event) {
-    let zoom = event.ratio;
-
-    console.log('onCropperZoom', event);
-
-    if (zoom < this.state.minZoom) {
-      this.cropper.zoomTo(this.state.minZoom);
-
-      return false;
-    }
-
-    if (zoom > maxZoom) {
-      this.cropper.zoomTo(maxZoom);
-
-      return false;
-    }
-
-    /*if (zoom < minZoom - zoomStep || zoom > maxZoom + zoomStep) {
-      return false;
-    }
-
-    if (zoom < minZoom) {
-      zoom = minZoom;
-    } else if (zoom > maxZoom) {
-      zoom = maxZoom;
-    //} else if (zoom < 0) {
-    //  zoom = Math.floor((zoom) * zoomStepIncrement) / zoomStepIncrement;
-    } else {
-      zoom = Math.round((zoom) * zoomStepIncrement) / zoomStepIncrement;
-    }*/
-
-    console.log('zuuum', zoom);
-
-    this.setState({
-      zoom: zoom,
-    });
-
-    return true;
-  }
-
-  onZoomButtonClick(change) {
-    console.log('zoom out', change);
-
-    const value = this.state.zoom + change;
-
-    //this.cropper.zoom(change);
-    this.zoom(value);
-  }
-
-  onZoomChange(event) {
-    console.log('onZoomChange', event.target.value);
-    const value = parseFloat(event.target.value);
-    //if (value < minZoom || value > maxZoom) {
-    //  return;
-    //}
-
-    this.zoom(value);
   }
 
   zoom(value) {
-    console.log('zoom', value);
-
     const minZoom = this.state.minZoom;
-    value = value > maxZoom ? maxZoom : value < minZoom ? minZoom : value;
+    let zoom = value;
+    if (zoom > maxZoom) {
+      zoom = maxZoom;
+    } else if (zoom < minZoom) {
+      zoom = minZoom;
+    }
 
-    this.cropper.zoomTo(value);
-
+    console.log('zoom', zoom, minZoom);
+    this.cropper.zoomTo(zoom);
+    console.log('set state', zoom);
     this.setState({
-      zoom: value,
+      zoom,
     });
   }
 
@@ -203,25 +144,19 @@ class ImageCropper extends React.Component {
     const {
       zoom,
       minZoom,
-      zoomStep,
     } = this.state;
 
     return (
-      <div>
+      <div className="image-cropper__body">
         <img
-          crossOrigin={this.props.crossOrigin}
           ref="img"
           src={this.props.src}
-          alt={this.props.alt === undefined ? "picture" : this.props.alt}
+          alt="Crop"
           style={imgStyle}
         />
-        <div className="image-cropper__body">
-          <button onClick={() => this.onZoomButtonClick(-1 * zoomStep)} disabled={zoom <= minZoom} className="material-icons image-cropper__zoom-out">remove</button>
-          <div className="image-cropper__slider-container">
-            <input type="range" min={minZoom} max={maxZoom} step={zoomStep} value={zoom} onChange={this.onZoomChange} />
-          </div>
-          <button onClick={() => this.onZoomButtonClick(zoomStep)} disabled={zoom >= maxZoom} className="material-icons image-cropper__zoom-in">add</button>
-        </div>
+        {this.props.src !== null ?
+          <Slider onChange={this.onSliderChange} value={zoom} min={minZoom} max={maxZoom} withBars className="image-cropper__slider" />
+          : null}
       </div>
     );
   }

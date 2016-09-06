@@ -1,11 +1,11 @@
-.image-cropper__body {
-  position: relative;
-}
-
 .image-cropper__zoom-in,
 .image-cropper__zoom-out {
   position: absolute;
-  top: 0;
+  top: 2px;
+}
+
+.image-cropper__zoom-out {
+  left: 0;
 }
 
 .image-cropper__zoom-in {
@@ -13,10 +13,45 @@
 }
 
 .image-cropper__slider-container {
-  margin: 0 46px;
+  margin: 10px 50px;
+  padding: 0px 40px;
+  position: relative;
 }
 
-.image-cropper__slider-container input {
-  width: 100%;
-  margin: 0;
+.image-cropper__slider-container button {
+  border: 0;
+  background: none;
+}
+
+.image-cropper__slider {
+  height: 30px;
+}
+
+.image-cropper__slider .handle.active {
+  background-color: #F06A48;
+}
+
+.image-cropper__slider .bar {
+  position: relative;
+  background: #F06A48;
+}
+
+.image-cropper__slider .bar.bar-1 {
+  background: #000000;
+}
+
+.image-cropper__slider .bar {
+  top: 14px;
+  height: 2px;
+}
+
+.image-cropper__slider .handle {
+  top: 1px;
+  width: 30px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  background-color: #F06A48;
+  cursor: pointer;
+  border-radius: 14px;
 }

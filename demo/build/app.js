@@ -84,7 +84,6 @@
 	  _createClass(App, [{
 	    key: 'onImageClick',
 	    value: function onImageClick(src, aspectRatio) {
-	      console.log("onImageClick", src, aspectRatio);
 	      this.setState({
 	        src: src,
 	        aspectRatio: aspectRatio
@@ -120,8 +119,11 @@
 	        _react2.default.createElement('img', { style: style, src: '../img/airport.jpeg', onClick: function onClick() {
 	            return _this2.onImageClick('../img/airport.jpeg', 4 / 3);
 	          } }),
-	        _react2.default.createElement('img', { style: style, src: '../img/airport.jpeg', onClick: function onClick() {
-	            return _this2.onImageClick('../img/airport.jpeg', 3 / 5);
+	        _react2.default.createElement('img', { style: style, src: '../img/blomst.jpeg', onClick: function onClick() {
+	            return _this2.onImageClick('../img/blomst.jpeg', 3 / 5);
+	          } }),
+	        _react2.default.createElement('img', { style: style, src: '../img/lite.png', onClick: function onClick() {
+	            return _this2.onImageClick('../img/lite.png', 16 / 9);
 	          } }),
 	        _react2.default.createElement(_nocmsImageCropper.ImageCropper, { src: src, aspectRatio: aspectRatio })
 	      );
@@ -130,8 +132,6 @@
 	
 	  return App;
 	}(_react2.default.Component);
-	
-	App.propTypes = {};
 	
 	ReactDOM.render(_react2.default.createElement(App, null), document.getElementById('app'));
 
@@ -24970,6 +24970,10 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _Slider = __webpack_require__(182);
+	
+	var _Slider2 = _interopRequireDefault(_Slider);
+	
 	var _cropperjs = __webpack_require__(37);
 	
 	var _cropperjs2 = _interopRequireDefault(_cropperjs);
@@ -24983,12 +24987,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var autoCropArea = 0.8; //  80% of the image
-	//const minZoom = Math.floor((autoCropArea - 1) * 100) / 100;
-	//const maxZoom = Math.ceil((1 - autoCropArea) * 100) / 100;
 	var maxZoom = autoCropArea * 2;
-	var numberOfSteps = 100;
-	//const zoomStep = (maxZoom * 2) / 100;
-	//const zoomStepIncrement = 1 / zoomStep;
 	
 	var ImageCropper = function (_React$Component) {
 	  _inherits(ImageCropper, _React$Component);
@@ -24996,18 +24995,14 @@
 	  function ImageCropper(props) {
 	    _classCallCheck(this, ImageCropper);
 	
-	    //console.log("x", minZoom, maxZoom, zoomStep, zoomStepIncrement);
-	
 	    var _this = _possibleConstructorReturn(this, (ImageCropper.__proto__ || Object.getPrototypeOf(ImageCropper)).call(this, props));
 	
 	    _this.state = {
-	      minZoom: null,
-	      zoomStep: null,
-	      zoom: 0
+	      zoom: 0,
+	      minZoom: null
 	    };
 	
-	    _this.onZoomButtonClick = _this.onZoomButtonClick.bind(_this);
-	    _this.onZoomChange = _this.onZoomChange.bind(_this);
+	    _this.onSliderChange = _this.onSliderChange.bind(_this);
 	    _this.onCropperZoom = _this.onCropperZoom.bind(_this);
 	    return _this;
 	  }
@@ -25031,77 +25026,20 @@
 	        scalable: false,
 	        zoomOnWheel: false,
 	        zoom: this.onCropperZoom,
-	        crop: function crop(event) {
+	        crop: function crop() {
 	          if (_this2.state.minZoom === null) {
 	            _this2.calculateMinZoom();
 	          }
-	          /*
-	                  console.log('crop', event, this.cropper);
-	                  console.log("image data", this.cropper.getImageData());
-	                  console.log("data", this.cropper.getData());
-	          
-	                  var data = this.cropper.getImageData();
-	                  var ratioW = data.width / data.naturalWidth;
-	                  var ratioH = data.height / data.naturalHeight;
-	          
-	                  console.log('rat', ratioW, ratioH, ratioW * minZoom);
-	                  console.log('rat2', ratioW, minZoom, ratioW * minZoom);
-	          
-	                  var maxHeight = data.naturalWidth / this.props.aspectRatio;
-	                  var maxWidth = data.naturalHeight / this.props.aspectRatio;
-	          
-	                  console.log('maxHeight', maxHeight);
-	                  console.log('maxWidth', maxWidth);
-	          
-	                  var h = (maxHeight * ratioH) / data.naturalHeight;
-	                  var w = (maxWidth * ratioW) / data.naturalWidth;
-	          
-	                  console.log('h', h, w);
-	          
-	                  this.calculateMinZoom();*/
-	        },
-	        ready: function ready(event) {
-	          console.log('ready', event);
 	        }
 	      };
 	
 	      this.cropper = new _cropperjs2.default(this.refs.img, options);
-	
-	      console.log("image data", this.cropper.getImageData());
-	    }
-	  }, {
-	    key: 'calculateMinZoom',
-	    value: function calculateMinZoom() {
-	      var data = this.cropper.getImageData();
-	      var ratio = void 0;
-	      if (this.props.aspectRatio > 0) {
-	        ratio = data.width / data.naturalWidth;
-	      } else {
-	        ratio = data.height / data.naturalHeight;
-	      }
-	
-	      var minZoom = ratio - ratio * (1 - autoCropArea);
-	      console.log('calculateMinZoom', ratio, minZoom, data);
-	
-	      this.setState({
-	        zoom: ratio,
-	        minZoom: minZoom,
-	        zoomStep: this.calculateZoomStep(minZoom, maxZoom)
-	      });
-	    }
-	  }, {
-	    key: 'calculateZoomStep',
-	    value: function calculateZoomStep(min, max) {
-	      return (max - min) / numberOfSteps;
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      console.log('componentWillReceiveProps', nextProps);
-	
-	      this.setState({
-	        minZoom: null
-	      });
+	      this.state.minZoom = null;
+	      //this.state.zoom = 0;
 	
 	      if (nextProps.src !== this.props.src) {
 	        this.cropper.replace(nextProps.src);
@@ -25117,10 +25055,19 @@
 	    value: function onCropperZoom(event) {
 	      var zoom = event.ratio;
 	
-	      console.log('onCropperZoom', event);
+	      console.log('onCropperZoom', zoom, event);
+	
+	      if (!event.originalEvent) {
+	        return true;
+	      }
 	
 	      if (zoom < this.state.minZoom) {
+	        console.log('setting to min', this.state.minZoom);
 	        this.cropper.zoomTo(this.state.minZoom);
+	
+	        this.setState({
+	          zoom: this.state.minZoom
+	        });
 	
 	        return false;
 	      }
@@ -25128,23 +25075,12 @@
 	      if (zoom > maxZoom) {
 	        this.cropper.zoomTo(maxZoom);
 	
+	        this.setState({
+	          zoom: maxZoom
+	        });
+	
 	        return false;
 	      }
-	
-	      /*if (zoom < minZoom - zoomStep || zoom > maxZoom + zoomStep) {
-	        return false;
-	      }
-	       if (zoom < minZoom) {
-	        zoom = minZoom;
-	      } else if (zoom > maxZoom) {
-	        zoom = maxZoom;
-	      //} else if (zoom < 0) {
-	      //  zoom = Math.floor((zoom) * zoomStepIncrement) / zoomStepIncrement;
-	      } else {
-	        zoom = Math.round((zoom) * zoomStepIncrement) / zoomStepIncrement;
-	      }*/
-	
-	      console.log('zuuum', zoom);
 	
 	      this.setState({
 	        zoom: zoom
@@ -25153,45 +25089,51 @@
 	      return true;
 	    }
 	  }, {
-	    key: 'onZoomButtonClick',
-	    value: function onZoomButtonClick(change) {
-	      console.log('zoom out', change);
-	
-	      var value = this.state.zoom + change;
-	
-	      //this.cropper.zoom(change);
+	    key: 'onSliderChange',
+	    value: function onSliderChange(value) {
 	      this.zoom(value);
 	    }
 	  }, {
-	    key: 'onZoomChange',
-	    value: function onZoomChange(event) {
-	      console.log('onZoomChange', event.target.value);
-	      var value = parseFloat(event.target.value);
-	      //if (value < minZoom || value > maxZoom) {
-	      //  return;
-	      //}
+	    key: 'calculateMinZoom',
+	    value: function calculateMinZoom() {
+	      var data = this.cropper.getImageData();
+	      var ratio = void 0;
+	      if (this.props.aspectRatio > 0) {
+	        ratio = data.width / data.naturalWidth;
+	      } else {
+	        ratio = data.height / data.naturalHeight;
+	      }
 	
-	      this.zoom(value);
+	      var minZoom = ratio - ratio * (1 - autoCropArea);
+	
+	      console.log('minZoom', minZoom, ratio);
+	
+	      this.setState({
+	        zoom: ratio,
+	        minZoom: minZoom
+	      });
 	    }
 	  }, {
 	    key: 'zoom',
 	    value: function zoom(value) {
-	      console.log('zoom', value);
-	
 	      var minZoom = this.state.minZoom;
-	      value = value > maxZoom ? maxZoom : value < minZoom ? minZoom : value;
+	      var zoom = value;
+	      if (zoom > maxZoom) {
+	        zoom = maxZoom;
+	      } else if (zoom < minZoom) {
+	        zoom = minZoom;
+	      }
 	
-	      this.cropper.zoomTo(value);
-	
+	      console.log('zoom', zoom, minZoom);
+	      this.cropper.zoomTo(zoom);
+	      console.log('set state', zoom);
 	      this.setState({
-	        zoom: value
+	        zoom: zoom
 	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this3 = this;
-	
 	      var imgStyle = {
 	        height: '400px',
 	        width: '100%',
@@ -25201,42 +25143,18 @@
 	      var _state = this.state;
 	      var zoom = _state.zoom;
 	      var minZoom = _state.minZoom;
-	      var zoomStep = _state.zoomStep;
 	
 	
 	      return _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'image-cropper__body' },
 	        _react2.default.createElement('img', {
-	          crossOrigin: this.props.crossOrigin,
 	          ref: 'img',
 	          src: this.props.src,
-	          alt: this.props.alt === undefined ? "picture" : this.props.alt,
+	          alt: 'Crop',
 	          style: imgStyle
 	        }),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'image-cropper__body' },
-	          _react2.default.createElement(
-	            'button',
-	            { onClick: function onClick() {
-	                return _this3.onZoomButtonClick(-1 * zoomStep);
-	              }, disabled: zoom <= minZoom, className: 'material-icons image-cropper__zoom-out' },
-	            'remove'
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'image-cropper__slider-container' },
-	            _react2.default.createElement('input', { type: 'range', min: minZoom, max: maxZoom, step: zoomStep, value: zoom, onChange: this.onZoomChange })
-	          ),
-	          _react2.default.createElement(
-	            'button',
-	            { onClick: function onClick() {
-	                return _this3.onZoomButtonClick(zoomStep);
-	              }, disabled: zoom >= maxZoom, className: 'material-icons image-cropper__zoom-in' },
-	            'add'
-	          )
-	        )
+	        this.props.src !== null ? _react2.default.createElement(_Slider2.default, { onChange: this.onSliderChange, value: zoom, min: minZoom, max: maxZoom, withBars: true, className: 'image-cropper__slider' }) : null
 	      );
 	    }
 	  }]);
@@ -25255,6 +25173,928 @@
 	};
 	
 	exports.default = ImageCropper;
+	module.exports = exports['default'];
+
+/***/ },
+/* 181 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports === 'object') {
+	    module.exports = factory(require('react'));
+	  } else {
+	    root.ReactSlider = factory(root.React);
+	  }
+	}(this, function (React) {
+	
+	  /**
+	   * To prevent text selection while dragging.
+	   * http://stackoverflow.com/questions/5429827/how-can-i-prevent-text-element-selection-with-cursor-drag
+	   */
+	  function pauseEvent(e) {
+	    if (e.stopPropagation) e.stopPropagation();
+	    if (e.preventDefault) e.preventDefault();
+	    return false;
+	  }
+	
+	  function stopPropagation(e) {
+	    if (e.stopPropagation) e.stopPropagation();
+	  }
+	
+	  /**
+	   * Spreads `count` values equally between `min` and `max`.
+	   */
+	  function linspace(min, max, count) {
+	    var range = (max - min) / (count - 1);
+	    var res = [];
+	    for (var i = 0; i < count; i++) {
+	      res.push(min + range * i);
+	    }
+	    return res;
+	  }
+	
+	  function ensureArray(x) {
+	    return x == null ? [] : Array.isArray(x) ? x : [x];
+	  }
+	
+	  function undoEnsureArray(x) {
+	    return x != null && x.length === 1 ? x[0] : x;
+	  }
+	
+	  // undoEnsureArray(ensureArray(x)) === x
+	
+	  var ReactSlider = React.createClass({
+	    displayName: 'ReactSlider',
+	
+	    propTypes: {
+	
+	      /**
+	       * The minimum value of the slider.
+	       */
+	      min: React.PropTypes.number,
+	
+	      /**
+	       * The maximum value of the slider.
+	       */
+	      max: React.PropTypes.number,
+	
+	      /**
+	       * Value to be added or subtracted on each step the slider makes.
+	       * Must be greater than zero.
+	       * `max - min` should be evenly divisible by the step value.
+	       */
+	      step: React.PropTypes.number,
+	
+	      /**
+	       * The minimal distance between any pair of handles.
+	       * Must be positive, but zero means they can sit on top of each other.
+	       */
+	      minDistance: React.PropTypes.number,
+	
+	      /**
+	       * Determines the initial positions of the handles and the number of handles if the component has no children.
+	       *
+	       * If a number is passed a slider with one handle will be rendered.
+	       * If an array is passed each value will determine the position of one handle.
+	       * The values in the array must be sorted.
+	       * If the component has children, the length of the array must match the number of children.
+	       */
+	      defaultValue: React.PropTypes.oneOfType([
+	        React.PropTypes.number,
+	        React.PropTypes.arrayOf(React.PropTypes.number)
+	      ]),
+	
+	      /**
+	       * Like `defaultValue` but for [controlled components](http://facebook.github.io/react/docs/forms.html#controlled-components).
+	       */
+	      value: React.PropTypes.oneOfType([
+	        React.PropTypes.number,
+	        React.PropTypes.arrayOf(React.PropTypes.number)
+	      ]),
+	
+	      /**
+	       * Determines whether the slider moves horizontally (from left to right) or vertically (from top to bottom).
+	       */
+	      orientation: React.PropTypes.oneOf(['horizontal', 'vertical']),
+	
+	      /**
+	       * The css class set on the slider node.
+	       */
+	      className: React.PropTypes.string,
+	
+	      /**
+	       * The css class set on each handle node.
+	       *
+	       * In addition each handle will receive a numbered css class of the form `${handleClassName}-${i}`,
+	       * e.g. `handle-0`, `handle-1`, ...
+	       */
+	      handleClassName: React.PropTypes.string,
+	
+	      /**
+	       * The css class set on the handle that is currently being moved.
+	       */
+	      handleActiveClassName: React.PropTypes.string,
+	
+	      /**
+	       * If `true` bars between the handles will be rendered.
+	       */
+	      withBars: React.PropTypes.bool,
+	
+	      /**
+	       * The css class set on the bars between the handles.
+	       * In addition bar fragment will receive a numbered css class of the form `${barClassName}-${i}`,
+	       * e.g. `bar-0`, `bar-1`, ...
+	       */
+	      barClassName: React.PropTypes.string,
+	
+	      /**
+	       * If `true` the active handle will push other handles
+	       * within the constraints of `min`, `max`, `step` and `minDistance`.
+	       */
+	      pearling: React.PropTypes.bool,
+	
+	      /**
+	       * If `true` the handles can't be moved.
+	       */
+	      disabled: React.PropTypes.bool,
+	
+	      /**
+	       * Disables handle move when clicking the slider bar
+	       */
+	      snapDragDisabled: React.PropTypes.bool,
+	
+	      /**
+	       * Inverts the slider.
+	       */
+	      invert: React.PropTypes.bool,
+	
+	      /**
+	       * Callback called before starting to move a handle.
+	       */
+	      onBeforeChange: React.PropTypes.func,
+	
+	      /**
+	       * Callback called on every value change.
+	       */
+	      onChange: React.PropTypes.func,
+	
+	      /**
+	       * Callback called only after moving a handle has ended.
+	       */
+	      onAfterChange: React.PropTypes.func,
+	
+	      /**
+	       *  Callback called when the the slider is clicked (handle or bars).
+	       *  Receives the value at the clicked position as argument.
+	       */
+	      onSliderClick: React.PropTypes.func
+	    },
+	
+	    getDefaultProps: function () {
+	      return {
+	        min: 0,
+	        max: 100,
+	        step: 1,
+	        minDistance: 0,
+	        defaultValue: 0,
+	        orientation: 'horizontal',
+	        className: 'slider',
+	        handleClassName: 'handle',
+	        handleActiveClassName: 'active',
+	        barClassName: 'bar',
+	        withBars: false,
+	        pearling: false,
+	        disabled: false,
+	        snapDragDisabled: false,
+	        invert: false
+	      };
+	    },
+	
+	    getInitialState: function () {
+	      var value = this._or(ensureArray(this.props.value), ensureArray(this.props.defaultValue));
+	
+	      // reused throughout the component to store results of iterations over `value`
+	      this.tempArray = value.slice();
+	
+	      // array for storing resize timeouts ids
+	      this.pendingResizeTimeouts = [];
+	
+	      var zIndices = [];
+	      for (var i = 0; i < value.length; i++) {
+	        value[i] = this._trimAlignValue(value[i], this.props);
+	        zIndices.push(i);
+	      }
+	
+	      return {
+	        index: -1,
+	        upperBound: 0,
+	        sliderLength: 0,
+	        value: value,
+	        zIndices: zIndices
+	      };
+	    },
+	
+	    // Keep the internal `value` consistent with an outside `value` if present.
+	    // This basically allows the slider to be a controlled component.
+	    componentWillReceiveProps: function (newProps) {
+	      var value = this._or(ensureArray(newProps.value), this.state.value);
+	
+	      // ensure the array keeps the same size as `value`
+	      this.tempArray = value.slice();
+	
+	      for (var i = 0; i < value.length; i++) {
+	        this.state.value[i] = this._trimAlignValue(value[i], newProps);
+	      }
+	      if (this.state.value.length > value.length)
+	        this.state.value.length = value.length;
+	
+	      // If an upperBound has not yet been determined (due to the component being hidden
+	      // during the mount event, or during the last resize), then calculate it now
+	      if (this.state.upperBound === 0) {
+	        this._handleResize();
+	      }
+	    },
+	
+	    // Check if the arity of `value` or `defaultValue` matches the number of children (= number of custom handles).
+	    // If no custom handles are provided, just returns `value` if present and `defaultValue` otherwise.
+	    // If custom handles are present but neither `value` nor `defaultValue` are applicable the handles are spread out
+	    // equally.
+	    // TODO: better name? better solution?
+	    _or: function (value, defaultValue) {
+	      var count = React.Children.count(this.props.children);
+	      switch (count) {
+	        case 0:
+	          return value.length > 0 ? value : defaultValue;
+	        case value.length:
+	          return value;
+	        case defaultValue.length:
+	          return defaultValue;
+	        default:
+	          if (value.length !== count || defaultValue.length !== count) {
+	            console.warn(this.constructor.displayName + ": Number of values does not match number of children.");
+	          }
+	          return linspace(this.props.min, this.props.max, count);
+	      }
+	    },
+	
+	    componentDidMount: function () {
+	      window.addEventListener('resize', this._handleResize);
+	      this._handleResize();
+	    },
+	
+	    componentWillUnmount: function () {
+	      this._clearPendingResizeTimeouts();
+	      window.removeEventListener('resize', this._handleResize);
+	    },
+	
+	    getValue: function () {
+	      return undoEnsureArray(this.state.value);
+	    },
+	
+	    _handleResize: function () {
+	      // setTimeout of 0 gives element enough time to have assumed its new size if it is being resized
+	      var resizeTimeout = window.setTimeout(function() {
+	        // drop this timeout from pendingResizeTimeouts to reduce memory usage
+	        this.pendingResizeTimeouts.shift();
+	
+	        var slider = this.refs.slider;
+	        var handle = this.refs.handle0;
+	        var rect = slider.getBoundingClientRect();
+	
+	        var size = this._sizeKey();
+	
+	        var sliderMax = rect[this._posMaxKey()];
+	        var sliderMin = rect[this._posMinKey()];
+	
+	        this.setState({
+	          upperBound: slider[size] - handle[size],
+	          sliderLength: Math.abs(sliderMax - sliderMin),
+	          handleSize: handle[size],
+	          sliderStart: this.props.invert ? sliderMax : sliderMin
+	        });
+	      }.bind(this), 0);
+	
+	      this.pendingResizeTimeouts.push(resizeTimeout);
+	    },
+	
+	    // clear all pending timeouts to avoid error messages after unmounting
+	    _clearPendingResizeTimeouts: function() {
+	      do {
+	        var nextTimeout = this.pendingResizeTimeouts.shift();
+	
+	        clearTimeout(nextTimeout);
+	      } while (this.pendingResizeTimeouts.length);
+	    },
+	
+	    // calculates the offset of a handle in pixels based on its value.
+	    _calcOffset: function (value) {
+	      var ratio = (value - this.props.min) / (this.props.max - this.props.min);
+	      return ratio * this.state.upperBound;
+	    },
+	
+	    // calculates the value corresponding to a given pixel offset, i.e. the inverse of `_calcOffset`.
+	    _calcValue: function (offset) {
+	      var ratio = offset / this.state.upperBound;
+	      return ratio * (this.props.max - this.props.min) + this.props.min;
+	    },
+	
+	    _buildHandleStyle: function (offset, i) {
+	      var style = {
+	        position: 'absolute',
+	        willChange: this.state.index >= 0 ? this._posMinKey() : '',
+	        zIndex: this.state.zIndices.indexOf(i) + 1
+	      };
+	      style[this._posMinKey()] = offset + 'px';
+	      return style;
+	    },
+	
+	    _buildBarStyle: function (min, max) {
+	      var obj = {
+	        position: 'absolute',
+	        willChange: this.state.index >= 0 ? this._posMinKey() + ',' + this._posMaxKey() : ''
+	      };
+	      obj[this._posMinKey()] = min;
+	      obj[this._posMaxKey()] = max;
+	      return obj;
+	    },
+	
+	    _getClosestIndex: function (pixelOffset) {
+	      var minDist = Number.MAX_VALUE;
+	      var closestIndex = -1;
+	
+	      var value = this.state.value;
+	      var l = value.length;
+	
+	      for (var i = 0; i < l; i++) {
+	        var offset = this._calcOffset(value[i]);
+	        var dist = Math.abs(pixelOffset - offset);
+	        if (dist < minDist) {
+	          minDist = dist;
+	          closestIndex = i;
+	        }
+	      }
+	
+	      return closestIndex;
+	    },
+	
+	    _calcOffsetFromPosition: function (position) {
+	      var pixelOffset = position - this.state.sliderStart;
+	      if (this.props.invert) pixelOffset = this.state.sliderLength - pixelOffset;
+	      pixelOffset -= (this.state.handleSize / 2);
+	      return pixelOffset;
+	    },
+	
+	    // Snaps the nearest handle to the value corresponding to `position` and calls `callback` with that handle's index.
+	    _forceValueFromPosition: function (position, callback) {
+	      var pixelOffset = this._calcOffsetFromPosition(position);
+	      var closestIndex = this._getClosestIndex(pixelOffset);
+	      var nextValue = this._trimAlignValue(this._calcValue(pixelOffset));
+	
+	      var value = this.state.value.slice(); // Clone this.state.value since we'll modify it temporarily
+	      value[closestIndex] = nextValue;
+	
+	      // Prevents the slider from shrinking below `props.minDistance`
+	      for (var i = 0; i < value.length - 1; i += 1) {
+	        if (value[i + 1] - value[i] < this.props.minDistance) return;
+	      }
+	
+	      this.setState({value: value}, callback.bind(this, closestIndex));
+	    },
+	
+	    _getMousePosition: function (e) {
+	      return [
+	        e['page' + this._axisKey()],
+	        e['page' + this._orthogonalAxisKey()]
+	      ];
+	    },
+	
+	    _getTouchPosition: function (e) {
+	      var touch = e.touches[0];
+	      return [
+	        touch['page' + this._axisKey()],
+	        touch['page' + this._orthogonalAxisKey()]
+	      ];
+	    },
+	
+	    _getMouseEventMap: function () {
+	      return {
+	        'mousemove': this._onMouseMove,
+	        'mouseup': this._onMouseUp
+	      }
+	    },
+	
+	    _getTouchEventMap: function () {
+	      return {
+	        'touchmove': this._onTouchMove,
+	        'touchend': this._onTouchEnd
+	      }
+	    },
+	
+	    // create the `mousedown` handler for the i-th handle
+	    _createOnMouseDown: function (i) {
+	      return function (e) {
+	        if (this.props.disabled) return;
+	        var position = this._getMousePosition(e);
+	        this._start(i, position[0]);
+	        this._addHandlers(this._getMouseEventMap());
+	        pauseEvent(e);
+	      }.bind(this);
+	    },
+	
+	    // create the `touchstart` handler for the i-th handle
+	    _createOnTouchStart: function (i) {
+	      return function (e) {
+	        if (this.props.disabled || e.touches.length > 1) return;
+	        var position = this._getTouchPosition(e);
+	        this.startPosition = position;
+	        this.isScrolling = undefined; // don't know yet if the user is trying to scroll
+	        this._start(i, position[0]);
+	        this._addHandlers(this._getTouchEventMap());
+	        stopPropagation(e);
+	      }.bind(this);
+	    },
+	
+	    _addHandlers: function (eventMap) {
+	      for (var key in eventMap) {
+	        document.addEventListener(key, eventMap[key], false);
+	      }
+	    },
+	
+	    _removeHandlers: function (eventMap) {
+	      for (var key in eventMap) {
+	        document.removeEventListener(key, eventMap[key], false);
+	      }
+	    },
+	
+	    _start: function (i, position) {
+	      // if activeElement is body window will lost focus in IE9
+	      if (document.activeElement && document.activeElement != document.body) {
+	        document.activeElement.blur();
+	      }
+	
+	      this.hasMoved = false;
+	
+	      this._fireChangeEvent('onBeforeChange');
+	
+	      var zIndices = this.state.zIndices;
+	      zIndices.splice(zIndices.indexOf(i), 1); // remove wherever the element is
+	      zIndices.push(i); // add to end
+	
+	      this.setState({
+	        startValue: this.state.value[i],
+	        startPosition: position,
+	        index: i,
+	        zIndices: zIndices
+	      });
+	    },
+	
+	    _onMouseUp: function () {
+	      this._onEnd(this._getMouseEventMap());
+	    },
+	
+	    _onTouchEnd: function () {
+	      this._onEnd(this._getTouchEventMap());
+	    },
+	
+	    _onEnd: function (eventMap) {
+	      this._removeHandlers(eventMap);
+	      this.setState({index: -1}, this._fireChangeEvent.bind(this, 'onAfterChange'));
+	    },
+	
+	    _onMouseMove: function (e) {
+	      var position = this._getMousePosition(e);
+	      this._move(position[0]);
+	    },
+	
+	    _onTouchMove: function (e) {
+	      if (e.touches.length > 1) return;
+	
+	      var position = this._getTouchPosition(e);
+	
+	      if (typeof this.isScrolling === 'undefined') {
+	        var diffMainDir = position[0] - this.startPosition[0];
+	        var diffScrollDir = position[1] - this.startPosition[1];
+	        this.isScrolling = Math.abs(diffScrollDir) > Math.abs(diffMainDir);
+	      }
+	
+	      if (this.isScrolling) {
+	        this.setState({index: -1});
+	        return;
+	      }
+	
+	      pauseEvent(e);
+	
+	      this._move(position[0]);
+	    },
+	
+	    _move: function (position) {
+	      this.hasMoved = true;
+	
+	      var props = this.props;
+	      var state = this.state;
+	      var index = state.index;
+	
+	      var value = state.value;
+	      var length = value.length;
+	      var oldValue = value[index];
+	
+	      var diffPosition = position - state.startPosition;
+	      if (props.invert) diffPosition *= -1;
+	
+	      var diffValue = diffPosition / (state.sliderLength - state.handleSize) * (props.max - props.min);
+	      var newValue = this._trimAlignValue(state.startValue + diffValue);
+	
+	      var minDistance = props.minDistance;
+	
+	      // if "pearling" (= handles pushing each other) is disabled,
+	      // prevent the handle from getting closer than `minDistance` to the previous or next handle.
+	      if (!props.pearling) {
+	        if (index > 0) {
+	          var valueBefore = value[index - 1];
+	          if (newValue < valueBefore + minDistance) {
+	            newValue = valueBefore + minDistance;
+	          }
+	        }
+	
+	        if (index < length - 1) {
+	          var valueAfter = value[index + 1];
+	          if (newValue > valueAfter - minDistance) {
+	            newValue = valueAfter - minDistance;
+	          }
+	        }
+	      }
+	
+	      value[index] = newValue;
+	
+	      // if "pearling" is enabled, let the current handle push the pre- and succeeding handles.
+	      if (props.pearling && length > 1) {
+	        if (newValue > oldValue) {
+	          this._pushSucceeding(value, minDistance, index);
+	          this._trimSucceeding(length, value, minDistance, props.max);
+	        }
+	        else if (newValue < oldValue) {
+	          this._pushPreceding(value, minDistance, index);
+	          this._trimPreceding(length, value, minDistance, props.min);
+	        }
+	      }
+	
+	      // Normally you would use `shouldComponentUpdate`, but since the slider is a low-level component,
+	      // the extra complexity might be worth the extra performance.
+	      if (newValue !== oldValue) {
+	        this.setState({value: value}, this._fireChangeEvent.bind(this, 'onChange'));
+	      }
+	    },
+	
+	    _pushSucceeding: function (value, minDistance, index) {
+	      var i, padding;
+	      for (i = index, padding = value[i] + minDistance;
+	           value[i + 1] != null && padding > value[i + 1];
+	           i++, padding = value[i] + minDistance) {
+	        value[i + 1] = this._alignValue(padding);
+	      }
+	    },
+	
+	    _trimSucceeding: function (length, nextValue, minDistance, max) {
+	      for (var i = 0; i < length; i++) {
+	        var padding = max - i * minDistance;
+	        if (nextValue[length - 1 - i] > padding) {
+	          nextValue[length - 1 - i] = padding;
+	        }
+	      }
+	    },
+	
+	    _pushPreceding: function (value, minDistance, index) {
+	      var i, padding;
+	      for (i = index, padding = value[i] - minDistance;
+	           value[i - 1] != null && padding < value[i - 1];
+	           i--, padding = value[i] - minDistance) {
+	        value[i - 1] = this._alignValue(padding);
+	      }
+	    },
+	
+	    _trimPreceding: function (length, nextValue, minDistance, min) {
+	      for (var i = 0; i < length; i++) {
+	        var padding = min + i * minDistance;
+	        if (nextValue[i] < padding) {
+	          nextValue[i] = padding;
+	        }
+	      }
+	    },
+	
+	    _axisKey: function () {
+	      var orientation = this.props.orientation;
+	      if (orientation === 'horizontal') return 'X';
+	      if (orientation === 'vertical') return 'Y';
+	    },
+	
+	    _orthogonalAxisKey: function () {
+	      var orientation = this.props.orientation;
+	      if (orientation === 'horizontal') return 'Y';
+	      if (orientation === 'vertical') return 'X';
+	    },
+	
+	    _posMinKey: function () {
+	      var orientation = this.props.orientation;
+	      if (orientation === 'horizontal') return this.props.invert ? 'right' : 'left';
+	      if (orientation === 'vertical') return this.props.invert ? 'bottom' : 'top';
+	    },
+	
+	    _posMaxKey: function () {
+	      var orientation = this.props.orientation;
+	      if (orientation === 'horizontal') return this.props.invert ? 'left' : 'right';
+	      if (orientation === 'vertical') return this.props.invert ? 'top' : 'bottom';
+	    },
+	
+	    _sizeKey: function () {
+	      var orientation = this.props.orientation;
+	      if (orientation === 'horizontal') return 'clientWidth';
+	      if (orientation === 'vertical') return 'clientHeight';
+	    },
+	
+	    _trimAlignValue: function (val, props) {
+	      return this._alignValue(this._trimValue(val, props), props);
+	    },
+	
+	    _trimValue: function (val, props) {
+	      props = props || this.props;
+	
+	      if (val <= props.min) val = props.min;
+	      if (val >= props.max) val = props.max;
+	
+	      return val;
+	    },
+	
+	    _alignValue: function (val, props) {
+	      props = props || this.props;
+	
+	      var valModStep = (val - props.min) % props.step;
+	      var alignValue = val - valModStep;
+	
+	      if (Math.abs(valModStep) * 2 >= props.step) {
+	        alignValue += (valModStep > 0) ? props.step : (-props.step);
+	      }
+	
+	      return parseFloat(alignValue.toFixed(5));
+	    },
+	
+	    _renderHandle: function (style, child, i) {
+	      var className = this.props.handleClassName + ' ' +
+	        (this.props.handleClassName + '-' + i) + ' ' +
+	        (this.state.index === i ? this.props.handleActiveClassName : '');
+	
+	      return (
+	        React.createElement('div', {
+	            ref: 'handle' + i,
+	            key: 'handle' + i,
+	            className: className,
+	            style: style,
+	            onMouseDown: this._createOnMouseDown(i),
+	            onTouchStart: this._createOnTouchStart(i)
+	          },
+	          child
+	        )
+	      );
+	    },
+	
+	    _renderHandles: function (offset) {
+	      var length = offset.length;
+	
+	      var styles = this.tempArray;
+	      for (var i = 0; i < length; i++) {
+	        styles[i] = this._buildHandleStyle(offset[i], i);
+	      }
+	
+	      var res = this.tempArray;
+	      var renderHandle = this._renderHandle;
+	      if (React.Children.count(this.props.children) > 0) {
+	        React.Children.forEach(this.props.children, function (child, i) {
+	          res[i] = renderHandle(styles[i], child, i);
+	        });
+	      } else {
+	        for (i = 0; i < length; i++) {
+	          res[i] = renderHandle(styles[i], null, i);
+	        }
+	      }
+	      return res;
+	    },
+	
+	    _renderBar: function (i, offsetFrom, offsetTo) {
+	      return (
+	        React.createElement('div', {
+	          key: 'bar' + i,
+	          ref: 'bar' + i,
+	          className: this.props.barClassName + ' ' + this.props.barClassName + '-' + i,
+	          style: this._buildBarStyle(offsetFrom, this.state.upperBound - offsetTo)
+	        })
+	      );
+	    },
+	
+	    _renderBars: function (offset) {
+	      var bars = [];
+	      var lastIndex = offset.length - 1;
+	
+	      bars.push(this._renderBar(0, 0, offset[0]));
+	
+	      for (var i = 0; i < lastIndex; i++) {
+	        bars.push(this._renderBar(i + 1, offset[i], offset[i + 1]));
+	      }
+	
+	      bars.push(this._renderBar(lastIndex + 1, offset[lastIndex], this.state.upperBound));
+	
+	      return bars;
+	    },
+	
+	    _onSliderMouseDown: function (e) {
+	      if (this.props.disabled) return;
+	      this.hasMoved = false;
+	      if (!this.props.snapDragDisabled) {
+	        var position = this._getMousePosition(e);
+	        this._forceValueFromPosition(position[0], function (i) {
+	          this._fireChangeEvent('onChange');
+	          this._start(i, position[0]);
+	          this._addHandlers(this._getMouseEventMap());
+	        }.bind(this));
+	      }
+	
+	      pauseEvent(e);
+	    },
+	
+	    _onSliderClick: function (e) {
+	      if (this.props.disabled) return;
+	
+	      if (this.props.onSliderClick && !this.hasMoved) {
+	        var position = this._getMousePosition(e);
+	        var valueAtPos = this._trimAlignValue(this._calcValue(this._calcOffsetFromPosition(position[0])));
+	        this.props.onSliderClick(valueAtPos);
+	      }
+	    },
+	
+	    _fireChangeEvent: function (event) {
+	      if (this.props[event]) {
+	        this.props[event](undoEnsureArray(this.state.value));
+	      }
+	    },
+	
+	    render: function () {
+	      var state = this.state;
+	      var props = this.props;
+	
+	      var offset = this.tempArray;
+	      var value = state.value;
+	      var l = value.length;
+	      for (var i = 0; i < l; i++) {
+	        offset[i] = this._calcOffset(value[i], i);
+	      }
+	
+	      var bars = props.withBars ? this._renderBars(offset) : null;
+	      var handles = this._renderHandles(offset);
+	
+	      return (
+	        React.createElement('div', {
+	            ref: 'slider',
+	            style: {position: 'relative'},
+	            className: props.className + (props.disabled ? ' disabled' : ''),
+	            onMouseDown: this._onSliderMouseDown,
+	            onClick: this._onSliderClick
+	          },
+	          bars,
+	          handles
+	        )
+	      );
+	    }
+	  });
+	
+	  return ReactSlider;
+	}));
+
+
+/***/ },
+/* 182 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactSlider = __webpack_require__(181);
+	
+	var _reactSlider2 = _interopRequireDefault(_reactSlider);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var numberOfSteps = 1000;
+	
+	var Slider = function (_React$Component) {
+	  _inherits(Slider, _React$Component);
+	
+	  function Slider(props) {
+	    _classCallCheck(this, Slider);
+	
+	    var _this = _possibleConstructorReturn(this, (Slider.__proto__ || Object.getPrototypeOf(Slider)).call(this, props));
+	
+	    _this.onIncrementClick = _this.onIncrementClick.bind(_this);
+	    _this.onChange = _this.onChange.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(Slider, [{
+	    key: 'onIncrementClick',
+	    value: function onIncrementClick(increment) {
+	      this.onChange(this.refs.slider.getValue() + increment);
+	    }
+	  }, {
+	    key: 'onChange',
+	    value: function onChange(percent) {
+	      if (typeof this.props.onChange === 'function') {
+	        var value = this.convertFromPercent({
+	          min: this.props.min,
+	          max: this.props.max,
+	          percent: percent
+	        });
+	
+	        this.props.onChange(value);
+	      }
+	    }
+	  }, {
+	    key: 'convertToPercent',
+	    value: function convertToPercent(_ref) {
+	      var min = _ref.min;
+	      var max = _ref.max;
+	      var value = _ref.value;
+	
+	      var percent = (value - min) / (max - min) * numberOfSteps;
+	      console.log('convertToPercent', percent);
+	
+	      return percent;
+	    }
+	  }, {
+	    key: 'convertFromPercent',
+	    value: function convertFromPercent(_ref2) {
+	      var min = _ref2.min;
+	      var max = _ref2.max;
+	      var percent = _ref2.percent;
+	
+	      var value = 1.0 / numberOfSteps * (percent * max + numberOfSteps * min - percent * min);
+	      console.log('convertFromPercent', value);
+	
+	      return value;
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+	
+	      var value = this.convertToPercent(this.props);
+	
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'image-cropper__slider-container' },
+	        _react2.default.createElement(
+	          'button',
+	          { onClick: function onClick() {
+	              return _this2.onIncrementClick(-1);
+	            }, disabled: value === 0, className: 'material-icons image-cropper__zoom-out' },
+	          'remove'
+	        ),
+	        _react2.default.createElement(_reactSlider2.default, { onChange: this.onChange, value: value, min: 0, max: numberOfSteps, withBars: true, className: 'image-cropper__slider', ref: 'slider' }),
+	        _react2.default.createElement(
+	          'button',
+	          { onClick: function onClick() {
+	              return _this2.onIncrementClick(1);
+	            }, disabled: value === numberOfSteps, className: 'material-icons image-cropper__zoom-in' },
+	          'add'
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return Slider;
+	}(_react2.default.Component);
+	
+	Slider.propTypes = {
+	  value: _react2.default.PropTypes.number,
+	  min: _react2.default.PropTypes.number,
+	  max: _react2.default.PropTypes.number,
+	  onChange: _react2.default.PropTypes.func
+	};
+	
+	exports.default = Slider;
 	module.exports = exports['default'];
 
 /***/ }
