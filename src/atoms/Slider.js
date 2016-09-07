@@ -12,8 +12,6 @@ class Slider extends React.Component {
   }
 
   componentWillReceiveProps() {
-    console.debug('render', this.refs.slider);
-
     // Hack
     this.refs.slider._handleResize();
   }
@@ -24,7 +22,7 @@ class Slider extends React.Component {
 
   onChange(percent) {
     if (typeof this.props.onChange === 'function') {
-      const value = this.convertFromPercent({
+      const value = this.convertFromSliderScale({
         min: this.props.min,
         max: this.props.max,
         percent,
@@ -34,22 +32,22 @@ class Slider extends React.Component {
     }
   }
 
-  convertToPercent({ min, max, value }) {
+  convertToSliderScale({ min, max, value }) {
     const percent = ((value - min) / (max - min)) * numberOfSteps;
-    console.log('convertToPercent', percent);
+    //console.log('convertToPercent', percent);
 
     return percent;
   }
 
-  convertFromPercent({ min, max, percent }) {
+  convertFromSliderScale({ min, max, percent }) {
     const value = (1.0 / numberOfSteps) * (percent * max + numberOfSteps * min - percent * min);
-    console.log('convertFromPercent', value);
+    //console.log('convertFromPercent', value);
 
     return value;
   }
 
   render() {
-    const value = this.convertToPercent(this.props);
+    const value = this.convertToSliderScale(this.props);
 
     return (
       <div className="image-cropper__slider-container">

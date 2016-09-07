@@ -107,6 +107,12 @@
 	      return _react2.default.createElement(
 	        'div',
 	        null,
+	        _react2.default.createElement(_nocmsImageCropper.ImageCropper, { src: src, aspectRatio: aspectRatio }),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          'Click on an image to start cropping.'
+	        ),
 	        _react2.default.createElement('img', { style: style, src: '../img/alley.jpg', onClick: function onClick() {
 	            return _this2.onImageClick('../img/alley.jpg', 16 / 9);
 	          } }),
@@ -127,8 +133,7 @@
 	          } }),
 	        _react2.default.createElement('img', { style: style, src: 'http://res.cloudinary.com/dxzl6tbhy/image/upload/v1471954670/article/bridge_nocms.jpg', onClick: function onClick() {
 	            return _this2.onImageClick('http://res.cloudinary.com/dxzl6tbhy/image/upload/v1471954670/article/bridge_nocms.jpg', 16 / 9);
-	          } }),
-	        _react2.default.createElement(_nocmsImageCropper.ImageCropper, { src: src, aspectRatio: aspectRatio })
+	          } })
 	      );
 	    }
 	  }]);
@@ -4421,12 +4426,10 @@
 	        scalable: false,
 	        zoomOnWheel: false,
 	        zoom: this.onCropperZoom,
-	        crop: function crop() {
-	          if (_this2.state.minZoom === null) {
-	            setTimeout(function () {
-	              _this2.calculateMinZoom();
-	            }, 200);
-	          }
+	        built: function built() {
+	          console.log('built');
+	
+	          _this2.calculateMinZoom();
 	        }
 	      };
 	
@@ -4443,8 +4446,6 @@
 	      if (nextProps.aspectRatio !== this.props.aspectRatio) {
 	        this.cropper.setAspectRatio(nextProps.aspectRatio);
 	      }
-	
-	      this.cropper.reset();
 	    }
 	  }, {
 	    key: 'onCropperZoom',
@@ -4476,25 +4477,9 @@
 	      this.zoom(value);
 	    }
 	  }, {
-	    key: 'calculateMinZoom',
-	    value: function calculateMinZoom() {
-	      var data = this.cropper.getImageData();
-	      console.log('calculateMinZoom', data);
-	      var ratio = void 0;
-	      if (this.props.aspectRatio > 0) {
-	        ratio = data.width / data.naturalWidth;
-	      } else {
-	        ratio = data.height / data.naturalHeight;
-	      }
-	
-	      var minZoom = ratio - ratio * (1 - autoCropArea);
-	
-	      console.log('minZoom', minZoom, ratio);
-	
-	      this.setState({
-	        zoom: ratio,
-	        minZoom: minZoom
-	      });
+	    key: 'getData',
+	    value: function getData() {
+	      return this.cropper.getData();
 	    }
 	  }, {
 	    key: 'zoom',
@@ -4507,11 +4492,27 @@
 	        zoom = minZoom;
 	      }
 	
-	      //console.log('zoom', zoom, minZoom);
 	      this.cropper.zoomTo(zoom);
-	      //console.log('set state', zoom);
 	      this.setState({
 	        zoom: zoom
+	      });
+	    }
+	  }, {
+	    key: 'calculateMinZoom',
+	    value: function calculateMinZoom() {
+	      var data = this.cropper.getImageData();
+	      var ratio = void 0;
+	      if (this.props.aspectRatio > 0) {
+	        ratio = data.width / data.naturalWidth;
+	      } else {
+	        ratio = data.height / data.naturalHeight;
+	      }
+	
+	      var minZoom = ratio - ratio * (1 - autoCropArea);
+	
+	      this.setState({
+	        zoom: ratio,
+	        minZoom: minZoom
 	      });
 	    }
 	  }, {
@@ -4604,8 +4605,6 @@
 	  _createClass(Slider, [{
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps() {
-	      console.debug('render', this.refs.slider);
-	
 	      // Hack
 	      this.refs.slider._handleResize();
 	    }
@@ -4618,7 +4617,7 @@
 	    key: 'onChange',
 	    value: function onChange(percent) {
 	      if (typeof this.props.onChange === 'function') {
-	        var value = this.convertFromPercent({
+	        var value = this.convertFromSliderScale({
 	          min: this.props.min,
 	          max: this.props.max,
 	          percent: percent
@@ -4628,26 +4627,26 @@
 	      }
 	    }
 	  }, {
-	    key: 'convertToPercent',
-	    value: function convertToPercent(_ref) {
+	    key: 'convertToSliderScale',
+	    value: function convertToSliderScale(_ref) {
 	      var min = _ref.min;
 	      var max = _ref.max;
 	      var value = _ref.value;
 	
 	      var percent = (value - min) / (max - min) * numberOfSteps;
-	      console.log('convertToPercent', percent);
+	      //console.log('convertToPercent', percent);
 	
 	      return percent;
 	    }
 	  }, {
-	    key: 'convertFromPercent',
-	    value: function convertFromPercent(_ref2) {
+	    key: 'convertFromSliderScale',
+	    value: function convertFromSliderScale(_ref2) {
 	      var min = _ref2.min;
 	      var max = _ref2.max;
 	      var percent = _ref2.percent;
 	
 	      var value = 1.0 / numberOfSteps * (percent * max + numberOfSteps * min - percent * min);
-	      console.log('convertFromPercent', value);
+	      //console.log('convertFromPercent', value);
 	
 	      return value;
 	    }
@@ -4656,7 +4655,7 @@
 	    value: function render() {
 	      var _this2 = this;
 	
-	      var value = this.convertToPercent(this.props);
+	      var value = this.convertToSliderScale(this.props);
 	
 	      return _react2.default.createElement(
 	        'div',

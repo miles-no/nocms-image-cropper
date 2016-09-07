@@ -33,12 +33,10 @@ class ImageCropper extends React.Component {
       scalable: false,
       zoomOnWheel: false,
       zoom: this.onCropperZoom,
-      crop: () => {
-        if (this.state.minZoom === null) {
-          setTimeout(() => {
-            this.calculateMinZoom();
-          }, 200);
-        }
+      built: () => {
+        console.log('built');
+
+        this.calculateMinZoom();
       },
     };
 
@@ -54,8 +52,6 @@ class ImageCropper extends React.Component {
     if (nextProps.aspectRatio !== this.props.aspectRatio) {
       this.cropper.setAspectRatio(nextProps.aspectRatio);
     }
-
-    this.cropper.reset();
   }
 
   onCropperZoom(event) {
@@ -85,24 +81,8 @@ class ImageCropper extends React.Component {
     this.zoom(value);
   }
 
-  calculateMinZoom() {
-    const data = this.cropper.getImageData();
-    console.log('calculateMinZoom', data);
-    let ratio;
-    if (this.props.aspectRatio > 0) {
-      ratio = data.width / data.naturalWidth;
-    } else {
-      ratio = data.height / data.naturalHeight;
-    }
-
-    const minZoom = ratio - (ratio * (1 - autoCropArea));
-
-    console.log('minZoom', minZoom, ratio);
-
-    this.setState({
-      zoom: ratio,
-      minZoom,
-    });
+  getData() {
+    return this.cropper.getData();
   }
 
   zoom(value) {
@@ -114,11 +94,26 @@ class ImageCropper extends React.Component {
       zoom = minZoom;
     }
 
-    //console.log('zoom', zoom, minZoom);
     this.cropper.zoomTo(zoom);
-    //console.log('set state', zoom);
     this.setState({
       zoom,
+    });
+  }
+
+  calculateMinZoom() {
+    const data = this.cropper.getImageData();
+    let ratio;
+    if (this.props.aspectRatio > 0) {
+      ratio = data.width / data.naturalWidth;
+    } else {
+      ratio = data.height / data.naturalHeight;
+    }
+
+    const minZoom = ratio - (ratio * (1 - autoCropArea));
+
+    this.setState({
+      zoom: ratio,
+      minZoom,
     });
   }
 
