@@ -4427,8 +4427,6 @@
 	        zoomOnWheel: false,
 	        zoom: this.onCropperZoom,
 	        built: function built() {
-	          console.log('built');
-	
 	          _this2.calculateMinZoom();
 	        }
 	      };
@@ -4445,6 +4443,13 @@
 	      }
 	      if (nextProps.aspectRatio !== this.props.aspectRatio) {
 	        this.cropper.setAspectRatio(nextProps.aspectRatio);
+	      }
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      if (this.refs.cropper) {
+	        this.refs.cropper.destroy();
 	      }
 	    }
 	  }, {
@@ -4479,7 +4484,7 @@
 	  }, {
 	    key: 'getData',
 	    value: function getData() {
-	      return this.cropper.getData();
+	      return this.cropper.getData(true);
 	    }
 	  }, {
 	    key: 'zoom',

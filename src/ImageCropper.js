@@ -34,8 +34,6 @@ class ImageCropper extends React.Component {
       zoomOnWheel: false,
       zoom: this.onCropperZoom,
       built: () => {
-        console.log('built');
-
         this.calculateMinZoom();
       },
     };
@@ -51,6 +49,12 @@ class ImageCropper extends React.Component {
     }
     if (nextProps.aspectRatio !== this.props.aspectRatio) {
       this.cropper.setAspectRatio(nextProps.aspectRatio);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.refs.cropper) {
+      this.refs.cropper.destroy();
     }
   }
 
@@ -82,7 +86,7 @@ class ImageCropper extends React.Component {
   }
 
   getData() {
-    return this.cropper.getData();
+    return this.cropper.getData(true);
   }
 
   zoom(value) {
