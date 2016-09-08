@@ -4524,8 +4524,6 @@
 	    key: 'render',
 	    value: function render() {
 	      var imgStyle = {
-	        _height: '400px',
-	        width: '100%',
 	        opacity: 0
 	      };
 	
@@ -4538,6 +4536,7 @@
 	        'div',
 	        { className: 'image-cropper__body' },
 	        _react2.default.createElement('img', {
+	          className: 'image-cropper__placeholder',
 	          ref: 'img',
 	          src: this.props.src,
 	          alt: 'Crop',

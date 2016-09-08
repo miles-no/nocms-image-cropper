@@ -1,3 +1,12 @@
+.image-cropper__body {
+  max-width: 800px;
+}
+
+.image-cropper__placeholder {
+  max-height: 450px;
+  max-width: 100%;
+}
+
 .image-cropper__zoom-in,
 .image-cropper__zoom-out {
   position: absolute;

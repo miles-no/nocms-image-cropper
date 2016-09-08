@@ -123,8 +123,6 @@ class ImageCropper extends React.Component {
 
   render() {
     const imgStyle = {
-      _height: '400px',
-      width: '100%',
       opacity: 0,
     };
 
@@ -136,6 +134,7 @@ class ImageCropper extends React.Component {
     return (
       <div className="image-cropper__body">
         <img
+          className="image-cropper__placeholder"
           ref="img"
           src={this.props.src}
           alt="Crop"
