@@ -19,13 +19,14 @@ class ImageCropper extends React.Component {
   }
 
   componentDidMount() {
+    console.log("Did mount");
     const options = {
       viewMode: 1,
       autoCropArea,
       dragMode: 'move',
       cropBoxMovable: false,
       cropBoxResizable: false,
-      aspectRatio: this.props.aspectRatio,
+      aspectRatio: this.props.aspectRatio.width / this.props.aspectRatio.height,
       guides: false,
       center: false,
       highlight: false,
@@ -37,7 +38,7 @@ class ImageCropper extends React.Component {
         this.calculateMinZoom();
       },
     };
-
+    console.log(options.aspectRatio);
     this.cropper = new Cropper(this.refs.img, options);
   }
 
@@ -48,7 +49,8 @@ class ImageCropper extends React.Component {
       this.cropper.replace(nextProps.src);
     }
     if (nextProps.aspectRatio !== this.props.aspectRatio) {
-      this.cropper.setAspectRatio(nextProps.aspectRatio);
+      const aspectRatio = nextProps.aspectRatio.width / nextProps.aspectRatio.height;
+      this.cropper.setAspectRatio(aspectRatio);
     }
   }
 
@@ -150,7 +152,7 @@ class ImageCropper extends React.Component {
 
 ImageCropper.propTypes = {
   src: React.PropTypes.string,
-  aspectRatio: React.PropTypes.number,
+  aspectRatio: React.PropTypes.object,
   autoCropArea: React.PropTypes.number,
 };
 

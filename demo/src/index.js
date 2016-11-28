@@ -8,7 +8,10 @@ class App extends React.Component {
 
     this.state = {
       src: null,
-      aspectRatio: 16 / 9,
+      aspectRatio: {
+        width: 16,
+        height: 9,
+      },
     };
 
     this.onImageClick = this.onImageClick.bind(this);
@@ -35,13 +38,13 @@ class App extends React.Component {
     return (<div>
       <ImageCropper src={src} aspectRatio={aspectRatio} />
       <p>Click on an image to start cropping.</p>
-      <img style={style} src="../img/alley.jpg" onClick={() => this.onImageClick('../img/alley.jpg', 16 / 9)} />
-      <img style={style} src="../img/alley2.jpg" onClick={() => this.onImageClick('../img/alley2.jpg', 16 / 9)} />
-      <img style={style} src="../img/alley.jpg" onClick={() => this.onImageClick('../img/alley.jpg', 4 / 3)} />
-      <img style={style} src="../img/airport.jpeg" onClick={() => this.onImageClick('../img/airport.jpeg', 4 / 3)} />
-      <img style={style} src="../img/blomst.jpeg" onClick={() => this.onImageClick('../img/blomst.jpeg', 3 / 5)} />
-      <img style={style} src="../img/lite.png" onClick={() => this.onImageClick('../img/lite.png', 16 / 9)} />
-      <img style={style} src="http://res.cloudinary.com/dxzl6tbhy/image/upload/v1471954670/article/bridge_nocms.jpg" onClick={() => this.onImageClick('http://res.cloudinary.com/dxzl6tbhy/image/upload/v1471954670/article/bridge_nocms.jpg', 16 / 9)} />
+      <img style={style} src="../img/alley.jpg" onClick={() => this.onImageClick('../img/alley.jpg', {width: 16, height: 9})} />
+      <img style={style} src="../img/alley2.jpg" onClick={() => this.onImageClick('../img/alley2.jpg', {width: 16, height: 9})} />
+      <img style={style} src="../img/alley.jpg" onClick={() => this.onImageClick('../img/alley.jpg', {width: 4, height: 3})} />
+      <img style={style} src="../img/airport.jpeg" onClick={() => this.onImageClick('../img/airport.jpeg', {width: 4, height: 3})} />
+      <img style={style} src="../img/blomst.jpeg" onClick={() => this.onImageClick('../img/blomst.jpeg', {width: 3, height: 5})} />
+      <img style={style} src="../img/lite.png" onClick={() => this.onImageClick('../img/lite.png', {width: 16, height: 9})} />
+      <img style={style} src="http://res.cloudinary.com/dxzl6tbhy/image/upload/v1471954670/article/bridge_nocms.jpg" onClick={() => this.onImageClick('http://res.cloudinary.com/dxzl6tbhy/image/upload/v1471954670/article/bridge_nocms.jpg',{width: 16, height: 9})} />
     </div>);
   }
 }

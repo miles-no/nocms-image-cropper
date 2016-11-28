@@ -53,13 +53,14 @@ var ImageCropper = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
+      console.log("Did mount");
       var options = {
         viewMode: 1,
         autoCropArea: autoCropArea,
         dragMode: 'move',
         cropBoxMovable: false,
         cropBoxResizable: false,
-        aspectRatio: this.props.aspectRatio,
+        aspectRatio: this.props.aspectRatio.width / this.props.aspectRatio.height,
         guides: false,
         center: false,
         highlight: false,
@@ -71,7 +72,7 @@ var ImageCropper = function (_React$Component) {
           _this2.calculateMinZoom();
         }
       };
-
+      console.log(options.aspectRatio);
       this.cropper = new _cropperjs2.default(this.refs.img, options);
     }
   }, {
@@ -83,7 +84,8 @@ var ImageCropper = function (_React$Component) {
         this.cropper.replace(nextProps.src);
       }
       if (nextProps.aspectRatio !== this.props.aspectRatio) {
-        this.cropper.setAspectRatio(nextProps.aspectRatio);
+        var aspectRatio = nextProps.aspectRatio.width / nextProps.aspectRatio.height;
+        this.cropper.setAspectRatio(aspectRatio);
       }
     }
   }, {
@@ -193,7 +195,7 @@ var ImageCropper = function (_React$Component) {
 
 ImageCropper.propTypes = {
   src: _react2.default.PropTypes.string,
-  aspectRatio: _react2.default.PropTypes.number,
+  aspectRatio: _react2.default.PropTypes.object,
   autoCropArea: _react2.default.PropTypes.number
 };
 

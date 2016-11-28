@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "C:\\Users\\thoma\\dev\\nocms\\packages\\nocms-image-cropper/demo";
+/******/ 	__webpack_require__.p = "/Users/wenche/Documents/Prosjekter/NoCMS/packages/nocms-image-cropper/demo";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -74,7 +74,10 @@
 	
 	    _this.state = {
 	      src: null,
-	      aspectRatio: 16 / 9
+	      aspectRatio: {
+	        width: 16,
+	        height: 9
+	      }
 	    };
 	
 	    _this.onImageClick = _this.onImageClick.bind(_this);
@@ -114,25 +117,25 @@
 	          'Click on an image to start cropping.'
 	        ),
 	        _react2.default.createElement('img', { style: style, src: '../img/alley.jpg', onClick: function onClick() {
-	            return _this2.onImageClick('../img/alley.jpg', 16 / 9);
+	            return _this2.onImageClick('../img/alley.jpg', { width: 16, height: 9 });
 	          } }),
 	        _react2.default.createElement('img', { style: style, src: '../img/alley2.jpg', onClick: function onClick() {
-	            return _this2.onImageClick('../img/alley2.jpg', 16 / 9);
+	            return _this2.onImageClick('../img/alley2.jpg', { width: 16, height: 9 });
 	          } }),
 	        _react2.default.createElement('img', { style: style, src: '../img/alley.jpg', onClick: function onClick() {
-	            return _this2.onImageClick('../img/alley.jpg', 4 / 3);
+	            return _this2.onImageClick('../img/alley.jpg', { width: 4, height: 3 });
 	          } }),
 	        _react2.default.createElement('img', { style: style, src: '../img/airport.jpeg', onClick: function onClick() {
-	            return _this2.onImageClick('../img/airport.jpeg', 4 / 3);
+	            return _this2.onImageClick('../img/airport.jpeg', { width: 4, height: 3 });
 	          } }),
 	        _react2.default.createElement('img', { style: style, src: '../img/blomst.jpeg', onClick: function onClick() {
-	            return _this2.onImageClick('../img/blomst.jpeg', 3 / 5);
+	            return _this2.onImageClick('../img/blomst.jpeg', { width: 3, height: 5 });
 	          } }),
 	        _react2.default.createElement('img', { style: style, src: '../img/lite.png', onClick: function onClick() {
-	            return _this2.onImageClick('../img/lite.png', 16 / 9);
+	            return _this2.onImageClick('../img/lite.png', { width: 16, height: 9 });
 	          } }),
 	        _react2.default.createElement('img', { style: style, src: 'http://res.cloudinary.com/dxzl6tbhy/image/upload/v1471954670/article/bridge_nocms.jpg', onClick: function onClick() {
-	            return _this2.onImageClick('http://res.cloudinary.com/dxzl6tbhy/image/upload/v1471954670/article/bridge_nocms.jpg', 16 / 9);
+	            return _this2.onImageClick('http://res.cloudinary.com/dxzl6tbhy/image/upload/v1471954670/article/bridge_nocms.jpg', { width: 16, height: 9 });
 	          } })
 	      );
 	    }
@@ -4396,13 +4399,14 @@
 	    value: function componentDidMount() {
 	      var _this2 = this;
 	
+	      console.log("Did mount");
 	      var options = {
 	        viewMode: 1,
 	        autoCropArea: autoCropArea,
 	        dragMode: 'move',
 	        cropBoxMovable: false,
 	        cropBoxResizable: false,
-	        aspectRatio: this.props.aspectRatio,
+	        aspectRatio: this.props.aspectRatio.width / this.props.aspectRatio.height,
 	        guides: false,
 	        center: false,
 	        highlight: false,
@@ -4414,7 +4418,7 @@
 	          _this2.calculateMinZoom();
 	        }
 	      };
-	
+	      console.log(options.aspectRatio);
 	      this.cropper = new _cropperjs2.default(this.refs.img, options);
 	    }
 	  }, {
@@ -4426,7 +4430,8 @@
 	        this.cropper.replace(nextProps.src);
 	      }
 	      if (nextProps.aspectRatio !== this.props.aspectRatio) {
-	        this.cropper.setAspectRatio(nextProps.aspectRatio);
+	        var aspectRatio = nextProps.aspectRatio.width / nextProps.aspectRatio.height;
+	        this.cropper.setAspectRatio(aspectRatio);
 	      }
 	    }
 	  }, {
@@ -4536,7 +4541,7 @@
 	
 	ImageCropper.propTypes = {
 	  src: _react2.default.PropTypes.string,
-	  aspectRatio: _react2.default.PropTypes.number,
+	  aspectRatio: _react2.default.PropTypes.object,
 	  autoCropArea: _react2.default.PropTypes.number
 	};
 	
@@ -20689,7 +20694,8 @@
 	  if (x === y) {
 	    // Steps 1-5, 7-10
 	    // Steps 6.b-6.e: +0 != -0
-	    return x !== 0 || 1 / x === 1 / y;
+	    // Added the nonzero y check to make Flow happy, but it is redundant
+	    return x !== 0 || y !== 0 || 1 / x === 1 / y;
 	  } else {
 	    // Step 6.a: NaN == NaN
 	    return x !== x && y !== y;
