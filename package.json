@@ -1,6 +1,6 @@
 {
   "name": "nocms-image-cropper",
-  "version": "0.0.4",
+  "version": "0.0.3",
   "description": "Image cropper for NoCMS",
   "main": "lib/index.js",
   "author": "",
