@@ -3,7 +3,7 @@ import ReactSlider from 'react-slider';
 
 const numberOfSteps = 1000;
 
-class Slider extends React.Component {
+export default class Slider extends React.Component {
   constructor(props) {
     super(props);
 
@@ -60,10 +60,8 @@ class Slider extends React.Component {
 }
 
 Slider.propTypes = {
-  value: React.PropTypes.number,
-  min: React.PropTypes.number,
-  max: React.PropTypes.number,
-  onChange: React.PropTypes.func,
+  value: PropTypes.number,
+  min: PropTypes.number,
+  max: PropTypes.number,
+  onChange: PropTypes.func,
 };
-
-export default Slider;
