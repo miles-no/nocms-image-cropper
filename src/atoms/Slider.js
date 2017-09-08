@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactSlider from 'react-slider';
+import PropTypes from 'prop-types';
 
 const numberOfSteps = 1000;
 
