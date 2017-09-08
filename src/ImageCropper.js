@@ -1,11 +1,13 @@
 import React from 'react';
-import Slider from './atoms/Slider';
 import Cropper from 'cropperjs';
+import PropTypes from 'prop-types';
+
+import Slider from './atoms/Slider';
 
 const autoCropArea = 0.8; //  80% of the image
 const maxZoom = autoCropArea * 2;
 
-class ImageCropper extends React.Component {
+export default class ImageCropper extends React.Component {
   constructor(props) {
     super(props);
 
@@ -19,7 +21,6 @@ class ImageCropper extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Did mount");
     const options = {
       viewMode: 1,
       autoCropArea,
@@ -38,7 +39,6 @@ class ImageCropper extends React.Component {
         this.calculateMinZoom();
       },
     };
-    console.log(options.aspectRatio);
     this.cropper = new Cropper(this.refs.img, options);
   }
 
@@ -151,13 +151,10 @@ class ImageCropper extends React.Component {
 }
 
 ImageCropper.propTypes = {
-  src: React.PropTypes.string,
-  aspectRatio: React.PropTypes.object,
-  autoCropArea: React.PropTypes.number,
+  src: PropTypes.string,
+  aspectRatio: PropTypes.object,
 };
 
 ImageCropper.defaultProps = {
   aspectRatio: 16 / 9,
 };
-
-export default ImageCropper;

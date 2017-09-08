@@ -41,8 +41,7 @@ export default class Slider extends React.Component {
   }
 
   convertFromSliderScale({ min, max, percent }) {
-    const value = (1.0 / numberOfSteps) * (percent * max + numberOfSteps * min - percent * min);
-    //console.log('convertFromPercent', value);
+    const value = (1.0 / numberOfSteps) * ((percent * max) + ((numberOfSteps * min) - (percent * min)));
 
     return value;
   }
@@ -61,7 +60,6 @@ export default class Slider extends React.Component {
 }
 
 Slider.propTypes = {
-  value: PropTypes.number,
   min: PropTypes.number,
   max: PropTypes.number,
   onChange: PropTypes.func,
