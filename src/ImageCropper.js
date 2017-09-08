@@ -34,7 +34,7 @@ class ImageCropper extends React.Component {
       scalable: false,
       zoomOnWheel: false,
       zoom: this.onCropperZoom,
-      built: () => {
+      ready: () => {
         this.calculateMinZoom();
       },
     };

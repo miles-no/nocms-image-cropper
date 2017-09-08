@@ -16,7 +16,7 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "dependencies": {
-    "react-cropperjs": "^1.2.2",
+    "cropperjs": "1.0.0",
     "react-slider": "^0.7.0"
   },
   "devDependencies": {
@@ -54,5 +54,5 @@
   "release": {
     "verifyConditions": "condition-circle",
     "debug": false
-  } 
+  }
 }
