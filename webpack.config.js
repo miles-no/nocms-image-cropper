@@ -16,14 +16,14 @@ const config = {
     publicPath: `${__dirname}/demo`,
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /cropper\.css$/,
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
       },
       {
         test: /(\.jsx|\.js)$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: /node_modules/,
       },
       {
@@ -42,16 +42,15 @@ const config = {
 };
 
 new WebpackDevServer(webpack(config), {
-  contentBase: './demo',
+  contentBase: path.resolve(__dirname, './demo'),
   hot: true,
-  debug: true,
-}).listen(port, host, (err, result) => {
+}).listen(port, host, (err) => {
   if (err) {
     console.log(err);
   }
 });
 console.log('-------------------------');
-console.log(`Local web server runs at http://${host}:${port}`);
+console.log(`Local web server runs at http://${host}: ${port}`);
 console.log('-------------------------');
 
 module.exports = config;
