@@ -35,7 +35,7 @@ export default class Slider extends React.Component {
 
   convertToSliderScale({ min, max, value }) {
     const percent = ((value - min) / (max - min)) * numberOfSteps;
-    //console.log('convertToPercent', percent);
+    // console.log('convertToPercent', percent);
 
     return percent;
   }
@@ -51,9 +51,9 @@ export default class Slider extends React.Component {
 
     return (
       <div className="image-cropper__slider-container">
-        <button onClick={() => this.onIncrementClick(-1)} disabled={value === 0} className="material-icons image-cropper__zoom-out">remove</button>
+        <button onClick={() => { return this.onIncrementClick(-1); }} disabled={value === 0} className="material-icons image-cropper__zoom-out">remove</button>
         <ReactSlider onChange={this.onChange} value={value} min={0} max={numberOfSteps} withBars className="image-cropper__slider" ref="slider" />
-        <button onClick={() => this.onIncrementClick(1)} disabled={value === numberOfSteps} className="material-icons image-cropper__zoom-in">add</button>
+        <button onClick={() => { return this.onIncrementClick(1); }} disabled={value === numberOfSteps} className="material-icons image-cropper__zoom-in">add</button>
       </div>
     );
   }

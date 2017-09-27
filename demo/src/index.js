@@ -1,6 +1,8 @@
 import React from 'react';
-const ReactDOM = require('react-dom');
 import { ImageCropper } from 'nocms-image-cropper';
+
+const ReactDOM = require('react-dom');
+
 
 class App extends React.Component {
   constructor(props) {
