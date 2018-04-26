@@ -1,3 +1,5 @@
+/* eslint react/no-string-refs: off */
+
 import React from 'react';
 import Cropper from 'cropperjs';
 import PropTypes from 'prop-types';
@@ -39,7 +41,7 @@ export default class ImageCropper extends React.Component {
         this.calculateMinZoom();
       },
     };
-    this.cropper = new Cropper(this.refs.img, options);
+    this.cropper = new Cropper(this.refs.img, options); // eslint-disable-line
   }
 
   componentWillReceiveProps(nextProps) {
@@ -55,8 +57,8 @@ export default class ImageCropper extends React.Component {
   }
 
   componentWillUnmount() {
-    if (this.refs.cropper) {
-      this.refs.cropper.destroy();
+    if (this.refs.cropper) { // eslint-disable-line
+      this.refs.cropper.destroy(); // eslint-disable-line
     }
   }
 

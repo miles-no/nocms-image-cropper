@@ -1,8 +1,22 @@
+/* eslint react/no-string-refs: off */
 import React from 'react';
 import ReactSlider from 'react-slider';
 import PropTypes from 'prop-types';
 
 const numberOfSteps = 1000;
+
+const convertToSliderScale = ({ min, max, value }) => {
+  const percent = ((value - min) / (max - min)) * numberOfSteps;
+  // console.log('convertToPercent', percent);
+
+  return percent;
+};
+
+const convertFromSliderScale = ({ min, max, percent }) => {
+  const value = (1.0 / numberOfSteps) * ((percent * max) + ((numberOfSteps * min) - (percent * min)));
+
+  return value;
+};
 
 export default class Slider extends React.Component {
   constructor(props) {
@@ -14,16 +28,16 @@ export default class Slider extends React.Component {
 
   componentWillReceiveProps() {
     // Hack
-    this.refs.slider._handleResize();
+    this.refs.slider._handleResize(); // eslint-disable-line
   }
 
   onIncrementClick(increment) {
-    this.onChange(this.refs.slider.getValue() + increment);
+    this.onChange(this.refs.slider.getValue() + increment); // eslint-disable-line
   }
 
   onChange(percent) {
     if (typeof this.props.onChange === 'function') {
-      const value = this.convertFromSliderScale({
+      const value = convertFromSliderScale({
         min: this.props.min,
         max: this.props.max,
         percent,
@@ -33,21 +47,8 @@ export default class Slider extends React.Component {
     }
   }
 
-  convertToSliderScale({ min, max, value }) {
-    const percent = ((value - min) / (max - min)) * numberOfSteps;
-    // console.log('convertToPercent', percent);
-
-    return percent;
-  }
-
-  convertFromSliderScale({ min, max, percent }) {
-    const value = (1.0 / numberOfSteps) * ((percent * max) + ((numberOfSteps * min) - (percent * min)));
-
-    return value;
-  }
-
   render() {
-    const value = this.convertToSliderScale(this.props);
+    const value = convertToSliderScale(this.props);
 
     return (
       <div className="image-cropper__slider-container">
